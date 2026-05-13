@@ -1,0 +1,233 @@
+<style>
+  .add-on-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 450px;
+    background: var(--tulayraa-ivory);
+    z-index: 10000;
+    transform: translateX(100%);
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+  }
+
+  .add-on-drawer.active {
+    transform: translateX(0);
+  }
+
+  .add-on-drawer[x-cloak] { display: none; }
+
+  .add-on-drawer__header {
+    padding: 2rem;
+    background: var(--tulayraa-beige);
+    border-bottom: 1px solid var(--tulayraa-champagne);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .add-on-drawer__body {
+    padding: 2rem;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .add-on-ritual-title {
+    font-family: var(--font-heading-family);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .add-on-ritual-subtitle {
+    font-family: var(--font-body-family);
+    font-size: 0.9rem;
+    color: var(--tulayraa-taupe);
+    margin-bottom: 2rem;
+  }
+
+  .add-on-card {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 15px;
+    margin-bottom: 1rem;
+    border: 1px solid var(--tulayraa-beige);
+    align-items: center;
+  }
+
+  .add-on-card__image {
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+
+  .add-on-card__info {
+    flex: 1;
+  }
+
+  .add-on-card__title {
+    font-family: var(--font-heading-family);
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .add-on-card__price {
+    font-family: var(--font-body-family);
+    color: var(--tulayraa-taupe);
+    font-size: 0.85rem;
+  }
+
+  .add-on-card__add {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--tulayraa-beige);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .add-on-card__add.loading {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .add-on-card__add:hover {
+    background: var(--tulayraa-charcoal);
+    color: white;
+  }
+
+  .add-on-drawer__footer {
+    padding: 2rem;
+    border-top: 1px solid var(--tulayraa-champagne);
+  }
+</style>
+
+<div 
+  class="add-on-drawer" 
+  x-data="addOnSystem()" 
+  x-show="$store.addOns.isOpen" 
+  :class="{ 'active': $store.addOns.isOpen }"
+  x-cloak
+  @click.away="$store.addOns.close()"
+>
+  <div class="add-on-drawer__header">
+    <h2 class="add-on-drawer__title">Elevate Your Ritual</h2>
+    <button class="booking-modal__close" @click="$store.addOns.close()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+  </div>
+
+  <div class="add-on-drawer__body">
+    <div class="add-on-ritual-title">Recommended Add-ons</div>
+    <div class="add-on-ritual-subtitle">Enhance your main service with these curated additions.</div>
+
+    <div class="add-on-list">
+      {% if product.metafields.custom.add_on_services.value != blank %}
+        {% for addon in product.metafields.custom.add_on_services.value %}
+          <div class="add-on-card">
+            {% if addon.featured_image %}
+              <img src="{{ addon.featured_image | image_url: width: 200 }}" class="add-on-card__image" loading="lazy">
+            {% endif %}
+            <div class="add-on-card__info">
+              <div class="add-on-card__title">{{ addon.title }}</div>
+              <div class="add-on-card__price">{{ addon.price | money }}</div>
+            </div>
+            <button 
+              class="add-on-card__add" 
+              @click="addToCart('{{ addon.variants.first.id }}', $event)"
+              aria-label="Add {{ addon.title }} to ritual"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
+          </div>
+        {% endfor %}
+      {% else %}
+        <!-- Fallback if no metafields -->
+        <p class="add-on-ritual-subtitle">Your ritual is complete as is. We look forward to seeing you.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="add-on-drawer__footer">
+    <a href="/cart" class="tulayraa-btn tulayraa-btn--primary" style="width: 100%;">View My Ritual Basket</a>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.store('addOns', {
+      isOpen: false,
+      open() { this.isOpen = true; },
+      close() { this.isOpen = false; }
+    });
+  });
+
+  function addOnSystem() {
+    return {
+      addToCart(variantId, event) {
+        const btn = event.currentTarget;
+        btn.classList.add('loading');
+        
+        let formData = {
+          'items': [{
+            'id': variantId,
+            'quantity': 1
+          }]
+        };
+
+        fetch(window.Shopify.routes.root + 'cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+          btn.classList.remove('loading');
+          btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+          btn.style.background = '#4CAF50';
+          btn.style.color = 'white';
+          
+          // Optional: Refresh cart count or other UI elements
+          document.dispatchEvent(new CustomEvent('cart:updated', { detail: data }));
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          btn.classList.remove('loading');
+        });
+      }
+    }
+  }
+
+  // Monitor for native add-to-cart success to trigger the drawer
+  // This depends on the theme's specific events, but we can hook into common patterns
+  document.addEventListener('DOMContentLoaded', () => {
+    const addToCartForms = document.querySelectorAll('form[action$="/cart/add"]');
+    addToCartForms.forEach(form => {
+      form.addEventListener('submit', (e) => {
+        // If the theme handles AJAX add-to-cart, we wait for a specific event
+        // Otherwise, if the drawer is available for this product, we might want to show it.
+        // For Tulayraa, we'll assume the merchant wants to show upsells after any ritual is added.
+        setTimeout(() => {
+           const hasAddOns = {{ product.metafields.custom.add_on_services.value.size | default: 0 }};
+           if (hasAddOns > 0) {
+             Alpine.store('addOns').open();
+           }
+        }, 1000);
+      });
+    });
+  });
+</script>

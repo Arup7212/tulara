@@ -1,0 +1,294 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<!-- Swiper.js CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+<div class="tulayraa-services color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding">
+  <div class="page-width">
+    <div class="tulayraa-services__header" style="text-align: {{ section.settings.header_alignment }};">
+      {% if section.settings.tagline != blank %}
+        <div class="tulayraa-services__tagline" data-aos="fade-up">{{ section.settings.tagline }}</div>
+      {% endif %}
+      {% if section.settings.title != blank %}
+        <h2 class="tulayraa-services__title" data-aos="fade-up">{{ section.settings.title }}</h2>
+      {% endif %}
+    </div>
+
+    <!-- Swiper Container -->
+    <div class="swiper tulayraa-services-swiper-{{ section.id }}">
+      <div class="swiper-wrapper">
+        {% for block in section.blocks %}
+          {% liquid
+            assign service_product = block.settings.product
+            if service_product == blank
+              continue
+            endif
+            assign service_image = service_product.featured_image
+            assign service_title = service_product.title
+            assign service_price = service_product.price | money
+            assign service_link = service_product.url
+          %}
+          <div class="swiper-slide">
+            <a href="{{ service_link }}" class="service-card">
+              <div class="service-card__image-wrap">
+                {% if service_image != blank %}
+                  {{ service_image | image_url: width: 800 | image_tag: class: 'service-card__image', loading: 'lazy' }}
+                {% else %}
+                  {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg service-card__image' }}
+                {% endif %}
+              </div>
+              
+              <div class="service-card__content">
+                <h3 class="service-card__title">{{ service_title }}</h3>
+                <div class="service-card__meta">
+                  {% if block.settings.duration != blank %}
+                    <span class="service-card__duration">{{ block.settings.duration }}</span>
+                  {% endif %}
+                  <span class="service-card__price">From {{ service_price }}</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+      <!-- Pagination -->
+      <div class="swiper-pagination"></div>
+      <!-- Navigation -->
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .tulayraa-services {
+    background-color: var(--tulayraa-ivory);
+    overflow: hidden;
+  }
+
+  .swiper {
+    padding: 2rem 1rem 4rem !important;
+    overflow: visible !important;
+  }
+
+  .service-card {
+    display: block;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 40px 10px 40px 10px;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    height: 100%;
+  }
+
+  .service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(179, 139, 109, 0.15);
+  }
+
+  .service-card__image-wrap {
+    height: 300px;
+    overflow: hidden;
+    position: relative;
+    margin: 1rem;
+    border-radius: 30px 5px 30px 5px;
+  }
+
+  .service-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .service-card__content {
+    padding: 1.5rem 2rem 2.5rem;
+  }
+
+  .service-card__title {
+    font-family: var(--font-heading-family);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--tulayraa-charcoal);
+  }
+
+  .service-card__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-family: var(--font-body-family);
+    color: var(--tulayraa-taupe);
+    font-size: 0.9rem;
+  }
+
+  .service-card__price {
+    font-weight: 700;
+    color: var(--tulayraa-taupe);
+    margin-top: 0.5rem;
+  }
+
+  /* Swiper Custom Styling */
+  .swiper-button-next, .swiper-button-prev {
+    color: var(--tulayraa-taupe) !important;
+    background: white;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  
+  .swiper-button-next:after, .swiper-button-prev:after {
+    font-size: 18px !important;
+  }
+
+  .swiper-pagination-bullet-active {
+    background: var(--tulayraa-taupe) !important;
+  }
+</style>
+
+<!-- Swiper.js JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+  function initSwiper_{{ section.id | replace: '-', '_' }}() {
+    new Swiper('.tulayraa-services-swiper-{{ section.id }}', {
+      slidesPerView: 1,
+      spaceBetween: 20,
+      loop: true,
+      centeredSlides: true,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      breakpoints: {
+        640: {
+          slidesPerView: 2,
+          spaceBetween: 30,
+        },
+        1024: {
+          slidesPerView: 3,
+          spaceBetween: 40,
+        },
+      },
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initSwiper_{{ section.id | replace: '-', '_' }});
+  document.addEventListener('shopify:section:load', (event) => {
+    if (event.detail.sectionId === '{{ section.id }}') {
+      initSwiper_{{ section.id | replace: '-', '_' }}();
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Tulayraa Services Slide",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Curated Rituals"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Luxury Beauty Rituals"
+    },
+    {
+      "type": "select",
+      "id": "header_alignment",
+      "label": "Header Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "service",
+      "name": "Service Card",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Select Product"
+        },
+        {
+          "type": "text",
+          "id": "duration",
+          "label": "Duration (e.g. 90 mins)",
+          "default": "90 mins"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tulayraa Services Slide",
+      "blocks": [
+        { "type": "service" },
+        { "type": "service" },
+        { "type": "service" }
+      ]
+    }
+  ]
+}
+{% endschema %}

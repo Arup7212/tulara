@@ -1,0 +1,266 @@
+{{ 'tulayraa-design-system.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .tulayraa-hero--{{ section.id }} {
+    min-height: {{ section.settings.hero_height }}vh;
+  }
+
+  .tulayraa-hero--{{ section.id }} .tulayraa-hero__overlay {
+    background: rgba(0, 0, 0, {{ section.settings.overlay_opacity | divided_by: 100.0 }});
+  }
+
+  {%- if section.settings.image_mobile != blank -%}
+    @media screen and (max-width: 749px) {
+      .tulayraa-hero--{{ section.id }} .tulayraa-hero__bg img:first-child {
+        display: none;
+      }
+    }
+  {%- endif -%}
+{%- endstyle -%}
+
+<div class="tulayraa-hero tulayraa-hero--{{ section.id }} color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding">
+  <div class="tulayraa-hero__bg">
+    {% if section.settings.image != blank %}
+      {{ section.settings.image | image_url: width: 3000 | image_tag: loading: 'eager', fetchpriority: 'high', class: 'hero-desktop-img' }}
+      {% if section.settings.image_mobile != blank %}
+        {{ section.settings.image_mobile | image_url: width: 1000 | image_tag: loading: 'eager', class: 'hero-mobile-img' }}
+      {% endif %}
+    {% else %}
+      {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    {% endif %}
+  </div>
+
+  <div class="tulayraa-hero__overlay"></div>
+  
+  {% if section.settings.show_textures %}
+    <div class="floating-texture texture-1"></div>
+    <div class="floating-texture texture-2"></div>
+  {% endif %}
+
+  <div class="tulayraa-hero__content page-width content-align-{{ section.settings.content_alignment }}">
+    <div class="tulayraa-hero__inner">
+      {% if section.settings.tagline != blank %}
+        <div class="tulayraa-hero__tagline animate-fade-up">{{ section.settings.tagline }}</div>
+      {% endif %}
+      
+      {% if section.settings.title != blank %}
+        <h1 class="tulayraa-hero__title animate-fade-up">{{ section.settings.title }}</h1>
+      {% endif %}
+
+      {% if section.settings.description != blank %}
+        <div class="tulayraa-hero__description animate-fade-up">
+          {{ section.settings.description }}
+        </div>
+      {% endif %}
+
+      <div class="tulayraa-hero__buttons animate-fade-up">
+        {% if section.settings.button_1_label != blank %}
+          <a 
+            href="{{ section.settings.button_1_link }}" 
+            class="tulayraa-btn tulayraa-btn--primary"
+            {% if section.settings.button_1_label contains 'Book' %}
+              @click.prevent="$store.booking.open()"
+            {% endif %}
+          >
+            {{ section.settings.button_1_label }}
+          </a>
+        {% endif %}
+        
+        {% if section.settings.button_2_label != blank %}
+          <a href="{{ section.settings.button_2_link }}" class="tulayraa-btn tulayraa-btn--secondary">
+            {{ section.settings.button_2_label }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .hero-mobile-img { display: none; }
+  @media screen and (max-width: 749px) {
+    .hero-mobile-img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .content-align-left, .content-align-center, .content-align-right {
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  
+  .tulayraa-hero__inner {
+    max-width: 700px;
+  }
+
+  .content-align-center {
+    justify-content: center;
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  .content-align-right {
+    justify-content: flex-end;
+    text-align: right;
+    margin-left: auto;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.gsap && window.ScrollTrigger) {
+      gsap.to('.tulayraa-hero--{{ section.id }} .tulayraa-hero__bg img', {
+        yPercent: 20,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.tulayraa-hero--{{ section.id }}',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true
+        }
+      });
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Tulayraa Hero",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Desktop Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile Image"
+    },
+    {
+      "type": "range",
+      "id": "hero_height",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "label": "Hero Height",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay Opacity",
+      "default": 30
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Content Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Luxury Home Salon"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Heading",
+      "default": "A Sanctuary Brought Home."
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Tulayraa is where old wisdom meets new ease, and where every touch is both rooted in care and elevated in craft.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_1_label",
+      "label": "Button 1 Label",
+      "default": "Book Your Ritual"
+    },
+    {
+      "type": "url",
+      "id": "button_1_link",
+      "label": "Button 1 Link"
+    },
+    {
+      "type": "text",
+      "id": "button_2_label",
+      "label": "Button 2 Label",
+      "default": "Explore Services"
+    },
+    {
+      "type": "url",
+      "id": "button_2_link",
+      "label": "Button 2 Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_textures",
+      "label": "Show Floating Textures",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tulayraa Hero"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,388 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .bridal-{{ section.id }} .tulayraa-bridal__title {
+    font-size: {{ section.settings.heading_size }}rem;
+  }
+
+  .bridal-{{ section.id }} .tulayraa-bridal__description {
+    font-size: {{ section.settings.description_size }}rem;
+  }
+
+  @media screen and (max-width: 749px) {
+    .bridal-{{ section.id }} .tulayraa-bridal__title {
+      font-size: clamp(2.2rem, 10vw, {{ section.settings.heading_size }}rem);
+    }
+  }
+{%- endstyle -%}
+
+<div class="tulayraa-bridal bridal-{{ section.id }} color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding">
+  <div class="page-width">
+    <div class="tulayraa-bridal__grid {% if section.settings.image_position == 'right' %}grid-reverse{% endif %}">
+      
+      <!-- Image Content -->
+      <div class="tulayraa-bridal__visual" data-aos="zoom-in">
+        <div class="bridal-image-container" style="width: {{ section.settings.image_width }}%;">
+          {% if section.settings.image != blank %}
+            {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'bridal-img', loading: 'lazy' }}
+          {% else %}
+            {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg bridal-img' }}
+          {% endif %}
+          
+          <!-- Decorative element -->
+          <div class="bridal-decoration color-{{ section.settings.color_scheme }}"></div>
+        </div>
+      </div>
+
+      <!-- Text Content -->
+      <div class="tulayraa-bridal__content" data-aos="fade-up">
+        {% if section.settings.tagline != blank %}
+          <div class="tulayraa-hero__tagline" style="margin-bottom: 1.5rem;">{{ section.settings.tagline }}</div>
+        {% endif %}
+        
+        {% if section.settings.title != blank %}
+          <h2 class="tulayraa-bridal__title">{{ section.settings.title }}</h2>
+        {% endif %}
+
+        {% if section.settings.slogan != blank %}
+          <div class="tulayraa-bridal__slogan">“{{ section.settings.slogan }}”</div>
+        {% endif %}
+
+        <div class="tulayraa-bridal__description">
+          {{ section.settings.description }}
+        </div>
+
+        {% if section.blocks.size > 0 %}
+          <ul class="tulayraa-bridal__benefit-list">
+            {% for block in section.blocks %}
+              <li class="benefit-item" {{ block.shopify_attributes }}>
+                <span class="benefit-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </span>
+                {{ block.settings.text }}
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        {% if section.settings.button_label != blank %}
+          <div class="tulayraa-bridal__actions">
+            <a 
+              href="{{ section.settings.button_link }}" 
+              class="tulayraa-btn tulayraa-btn--primary"
+              {% if section.settings.button_label contains 'Book' %}
+                @click.prevent="$store.booking.open()"
+              {% endif %}
+            >
+              {{ section.settings.button_label }}
+            </a>
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+  .tulayraa-bridal {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tulayraa-bridal__grid {
+    display: flex;
+    align-items: center;
+    gap: 6rem;
+    min-height: 70vh;
+  }
+
+  .tulayraa-bridal__grid.grid-reverse {
+    flex-direction: row-reverse;
+  }
+
+  .tulayraa-bridal__content {
+    flex: 1.2;
+    z-index: 2;
+  }
+
+  .tulayraa-bridal__visual {
+    flex: 0.8;
+    display: flex;
+    justify-content: center;
+    position: relative;
+  }
+
+  .tulayraa-bridal__title {
+    font-family: var(--font-heading-family);
+    line-height: 1.1;
+    font-weight: 700;
+    color: var(--tulayraa-charcoal);
+    margin-bottom: 2rem;
+  }
+
+  .tulayraa-bridal__slogan {
+    font-family: var(--font-heading-family);
+    font-size: 1.4rem;
+    font-weight: 500;
+    font-style: italic;
+    color: var(--tulayraa-taupe);
+    margin-bottom: 2rem;
+  }
+
+  .tulayraa-bridal__description {
+    font-family: var(--font-body-family);
+    line-height: 1.8;
+    color: var(--tulayraa-charcoal);
+    margin-bottom: 3rem;
+    max-width: 550px;
+  }
+
+  .tulayraa-bridal__benefit-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 4rem 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: var(--font-body-family);
+    font-weight: 500;
+    color: var(--tulayraa-charcoal);
+    font-size: 1rem;
+  }
+
+  .benefit-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--tulayraa-champagne);
+    color: var(--tulayraa-taupe);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .bridal-image-container {
+    position: relative;
+    aspect-ratio: 3/4;
+  }
+
+  .bridal-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0 0 200px 200px; /* Salon Inverted Arch */
+    box-shadow: -20px 20px 60px rgba(0,0,0,0.05);
+  }
+
+  .bridal-decoration {
+    position: absolute;
+    top: -40px;
+    left: -40px;
+    width: 200px;
+    height: 200px;
+    border: 1px dashed var(--tulayraa-taupe);
+    z-index: -1;
+    border-radius: 50%;
+    opacity: 0.3;
+  }
+
+  @media screen and (max-width: 989px) {
+    .tulayraa-bridal__grid {
+      gap: 4rem;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .tulayraa-bridal__grid {
+      flex-direction: column !important;
+      text-align: center;
+    }
+    .tulayraa-bridal__content {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+    }
+    .benefit-item {
+      justify-content: center;
+    }
+    .bridal-image-container {
+      width: 100% !important;
+      order: -1;
+      margin-bottom: 4rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Tulayraa Bridal",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Visual Layout"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Bridal Image"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image Position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "min": 30,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Image Width (Desktop)",
+      "default": 90
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "The Bridal Ritual"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Heading",
+      "default": "Flawless Rituals for Your Most Sacred Day."
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 2,
+      "max": 8,
+      "step": 0.1,
+      "unit": "rem",
+      "label": "Heading Size",
+      "default": 3.8
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "min": 1,
+      "max": 3,
+      "step": 0.1,
+      "unit": "rem",
+      "label": "Description Size",
+      "default": 1.1
+    },
+    {
+      "type": "text",
+      "id": "slogan",
+      "label": "Italic Accent",
+      "default": "Zero Chaos. Complete Radiance."
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Your wedding morning should be as serene as the sanctuary we bring to your home. We specialize in rituals that prepare you for the mandap with grace.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "Book Bridal Ritual"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 100
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Benefit Text",
+          "default": "Expert makeup artists"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tulayraa Bridal",
+      "blocks": [
+        { "type": "benefit", "settings": { "text": "Stress-free morning rituals" } },
+        { "type": "benefit", "settings": { "text": "Expert bridal makeup artists" } },
+        { "type": "benefit", "settings": { "text": "Premium nail & hair services" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

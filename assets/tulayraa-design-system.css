@@ -1,0 +1,122 @@
+/* Tulayraa Design System Tokens */
+:root {
+  /* Colors - Luxury Neutral Palette */
+  --tulayraa-beige: #F5F5F0;
+  --tulayraa-ivory: #FFFFF0;
+  --tulayraa-cream: #FFFDD0;
+  --tulayraa-champagne: #F7E7CE;
+  --tulayraa-nude-pink: #F4E0E0;
+  --tulayraa-sand: #C2B280;
+  --tulayraa-taupe: #B38B6D;
+  --tulayraa-charcoal: #36454F;
+  
+  /* Textures & Effects */
+  --tulayraa-glass-bg: rgba(255, 255, 255, 0.4);
+  --tulayraa-glass-border: rgba(255, 255, 255, 0.2);
+  --tulayraa-soft-shadow: 0 8px 32px 0 rgba(179, 139, 109, 0.1);
+  
+  /* Typography */
+  --font-heading-family: var(--font-heading--family);
+  --font-body-family: var(--font-paragraph--family);
+  
+  /* Spacing */
+  --tulayraa-section-padding: 8rem;
+  --tulayraa-mobile-padding: 4rem;
+}
+
+/* Glassmorphism Utility */
+.glass-effect {
+  background: var(--tulayraa-glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--tulayraa-glass-border);
+  border-radius: 12px;
+}
+
+/* Animations */
+@keyframes softFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: softFadeUp 1s ease-out forwards;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Editorial Spacing & Layout */
+.tulayraa-section {
+  padding-top: var(--tulayraa-section-padding);
+  padding-bottom: var(--tulayraa-section-padding);
+  background-color: var(--tulayraa-beige);
+}
+
+.global-bg-theme {
+  background-color: var(--tulayraa-beige) !important;
+}
+
+@media screen and (max-width: 768px) {
+  .tulayraa-section {
+    padding-top: var(--tulayraa-mobile-padding);
+    padding-bottom: var(--tulayraa-mobile-padding);
+  }
+}
+
+/* Global Button System */
+.tulayraa-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 4rem;
+  font-family: var(--font-body-family);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 100px; /* Fully rounded */
+  cursor: pointer;
+  border: 1px solid transparent;
+  position: relative;
+  z-index: 1;
+}
+
+.tulayraa-btn--primary {
+  background-color: var(--tulayraa-charcoal);
+  color: white !important;
+  border: 1px solid var(--tulayraa-charcoal);
+}
+
+.tulayraa-btn--primary:hover {
+  background-color: transparent;
+  color: var(--tulayraa-charcoal) !important;
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.tulayraa-btn--outline {
+  background: transparent;
+  border: 1px solid var(--tulayraa-charcoal);
+  color: var(--tulayraa-charcoal);
+}
+
+.tulayraa-btn--outline:hover {
+  background: var(--tulayraa-charcoal);
+  color: white;
+}

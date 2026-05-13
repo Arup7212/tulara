@@ -1,0 +1,219 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="tulayraa-testimonials color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding">
+  <div class="page-width">
+    <div class="tulayraa-testimonials__header" style="text-align: center; margin-bottom: 5rem;">
+      <div class="tulayraa-hero__tagline" data-aos="fade-up">Ritual Stories</div>
+      <h2 class="tulayraa-hero__title" style="font-size: clamp(2rem, 4vw, 3rem);" data-aos="fade-up">Trusted by Modern Spirits</h2>
+    </div>
+
+    <div class="tulayraa-testimonials__grid" x-data="{ active: 0 }">
+      <div class="testimonials-wrapper">
+        {% for block in section.blocks %}
+          <div 
+            class="testimonial-slide" 
+            x-show="active === {{ forloop.index0 }}" 
+            x-transition:enter="animate-fade-up"
+            {{ block.shopify_attributes }}
+          >
+            <div class="testimonial-content">
+              <div class="testimonial-stars">
+                {% for i in (1..5) %}
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                {% endfor %}
+              </div>
+              <p class="testimonial-text">“{{ block.settings.text }}”</p>
+              <div class="testimonial-author">
+                <div class="author-info">
+                  <span class="author-name">{{ block.settings.author }}</span>
+                  <span class="author-role">{{ block.settings.role }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="testimonial-nav">
+        {% for block in section.blocks %}
+          <button 
+            class="nav-dot" 
+            :class="{ 'active': active === {{ forloop.index0 }} }" 
+            @click="active = {{ forloop.index0 }}"
+          ></button>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .tulayraa-testimonials {
+    background-color: var(--tulayraa-beige);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .testimonials-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .testimonial-slide {
+    text-align: center;
+  }
+
+  .testimonial-stars {
+    color: var(--tulayraa-taupe);
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.25rem;
+  }
+
+  .testimonial-text {
+    font-family: var(--font-heading-family);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--tulayraa-charcoal);
+    margin-bottom: 3rem;
+    font-style: italic;
+  }
+
+  .testimonial-author {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .author-name {
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: block;
+    color: var(--tulayraa-charcoal);
+  }
+
+  .author-role {
+    font-family: var(--font-body-family);
+    font-size: 0.9rem;
+    color: var(--tulayraa-taupe);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .testimonial-nav {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+
+  .nav-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--tulayraa-champagne);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .nav-dot.active {
+    background: var(--tulayraa-taupe);
+    transform: scale(1.3);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Tulayraa Testimonials",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Testimonial Text",
+          "default": "The ritual was more than just a beauty service. It was a moment of profound peace brought directly to my doorstep."
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Author Name",
+          "default": "Ananya Sharma"
+        },
+        {
+          "type": "text",
+          "id": "role",
+          "label": "Role/Location",
+          "default": "Bridal Client"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tulayraa Testimonials",
+      "blocks": [
+        { "type": "testimonial" },
+        { "type": "testimonial" },
+        { "type": "testimonial" }
+      ]
+    }
+  ]
+}
+{% endschema %}

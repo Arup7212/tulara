@@ -1,0 +1,29 @@
+<div class="tulayraa-product-booking" {{ block.shopify_attributes }}>
+  <button 
+    class="tulayraa-btn tulayraa-btn--primary" 
+    style="width: 100%; margin-top: 1rem;"
+    @click.prevent="$store.booking.open()"
+  >
+    {{ block.settings.button_label }}
+  </button>
+</div>
+
+{% schema %}
+{
+  "name": "Tulayraa Booking Button",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "Book This Ritual"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tulayraa Booking Button"
+    }
+  ]
+}
+{% endschema %}

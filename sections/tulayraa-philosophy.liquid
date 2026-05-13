@@ -1,0 +1,327 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .philosophy-{{ section.id }} .tulayraa-philosophy__title {
+    font-size: {{ section.settings.heading_size }}rem;
+  }
+
+  .philosophy-{{ section.id }} .tulayraa-philosophy__description {
+    font-size: {{ section.settings.description_size }}rem;
+  }
+
+  @media screen and (max-width: 749px) {
+    .philosophy-{{ section.id }} .tulayraa-philosophy__title {
+      font-size: clamp(2.5rem, 10vw, {{ section.settings.heading_size }}rem);
+    }
+  }
+{%- endstyle -%}
+
+<div class="tulayraa-philosophy philosophy-{{ section.id }} color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding">
+  <div class="page-width">
+    <div class="tulayraa-philosophy__grid {% if section.settings.image_position == 'right' %}grid-reverse{% endif %}">
+      
+      <!-- Text Content -->
+      <div class="tulayraa-philosophy__content" data-aos="fade-right">
+        {% if section.settings.tagline != blank %}
+          <div class="tulayraa-hero__tagline" style="margin-bottom: 1.5rem;">{{ section.settings.tagline }}</div>
+        {% endif %}
+        
+        {% if section.settings.title != blank %}
+          <h2 class="tulayraa-philosophy__title">{{ section.settings.title }}</h2>
+        {% endif %}
+
+        <div class="tulayraa-philosophy__text-box">
+          <div class="tulayraa-philosophy__description">
+            {{ section.settings.description }}
+          </div>
+          {% if section.settings.quote != blank %}
+            <div class="tulayraa-philosophy__accent-quote">
+              “{{ section.settings.quote }}”
+            </div>
+          {% endif %}
+
+          {% if section.settings.button_label != blank %}
+            <div class="tulayraa-philosophy__actions" style="margin-top: 3rem;">
+              <a href="{{ section.settings.button_link }}" class="tulayraa-btn tulayraa-btn--primary">
+                {{ section.settings.button_label }}
+              </a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Image Content -->
+      <div class="tulayraa-philosophy__visual" data-aos="fade-left">
+        <div class="image-container" style="width: {{ section.settings.image_width }}%;">
+          {% if section.settings.image != blank %}
+            {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'philosophy-img', loading: 'lazy' }}
+          {% else %}
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg philosophy-img' }}
+          {% endif %}
+          
+          <!-- Decorative element -->
+          <div class="philosophy-decoration color-{{ section.settings.color_scheme }}"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+  .tulayraa-philosophy {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tulayraa-philosophy__grid {
+    display: flex;
+    align-items: center;
+    gap: 5rem;
+    min-height: 60vh;
+  }
+
+  .tulayraa-philosophy__grid.grid-reverse {
+    flex-direction: row-reverse;
+  }
+
+  .tulayraa-philosophy__content {
+    flex: 1;
+    z-index: 2;
+  }
+
+  .tulayraa-philosophy__visual {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    position: relative;
+  }
+
+  .tulayraa-philosophy__title {
+    font-family: var(--font-heading-family);
+    line-height: 1.1;
+    font-weight: 700;
+    color: var(--tulayraa-charcoal);
+    margin-bottom: 2.5rem;
+  }
+
+  .tulayraa-philosophy__description {
+    font-family: var(--font-body-family);
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--tulayraa-charcoal);
+    margin-bottom: 2rem;
+    max-width: 500px;
+  }
+
+  .tulayraa-philosophy__accent-quote {
+    font-family: var(--font-heading-family);
+    font-size: 1.5rem;
+    font-weight: 500;
+    font-style: italic;
+    color: var(--tulayraa-taupe);
+    border-left: 3px solid var(--tulayraa-champagne);
+    padding-left: 2rem;
+    margin-top: 3rem;
+  }
+
+  .image-container {
+    position: relative;
+    aspect-ratio: 4/5;
+  }
+
+  .philosophy-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 100px 100px 0 0; /* Salon Arch style */
+    box-shadow: 20px 20px 60px rgba(0,0,0,0.05);
+  }
+
+  .philosophy-decoration {
+    position: absolute;
+    bottom: -30px;
+    right: -30px;
+    width: 150px;
+    height: 150px;
+    border: 1px solid var(--tulayraa-champagne);
+    z-index: -1;
+    border-radius: 50%;
+  }
+
+  @media screen and (max-width: 989px) {
+    .tulayraa-philosophy__grid {
+      gap: 3rem;
+    }
+    .image-container {
+      width: 80% !important;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .tulayraa-philosophy__grid {
+      flex-direction: column !important;
+      text-align: center;
+    }
+    .tulayraa-philosophy__accent-quote {
+      padding-left: 0;
+      border-left: none;
+      border-top: 1px solid var(--tulayraa-champagne);
+      padding-top: 2rem;
+    }
+    .tulayraa-philosophy__description {
+      margin: 0 auto 2rem;
+    }
+    .image-container {
+      width: 100% !important;
+      margin-top: 3rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Tulayraa Philosophy",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Content Layout"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Philosophy Image"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image Position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "min": 30,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Image Width (Desktop)",
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "The Ritual Philosophy"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Heading",
+      "default": "Balance is the New Beauty."
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 2,
+      "max": 8,
+      "step": 0.1,
+      "unit": "rem",
+      "label": "Heading Size",
+      "default": 4.5
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "min": 1,
+      "max": 3,
+      "step": 0.1,
+      "unit": "rem",
+      "label": "Description Size",
+      "default": 1.2
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>We believe that beauty is not just about the final result, but the journey of returning to yourself. Our salon brings the sanctuary to you.</p>"
+    },
+    {
+      "type": "text",
+      "id": "quote",
+      "label": "Accent Quote",
+      "default": "A Sanctuary Brought to Life."
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "Explore Rituals"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tulayraa Philosophy"
+    }
+  ]
+}
+{% endschema %}
