@@ -96,11 +96,11 @@
   }
 
   .menu:not(:has(.menu__heading--empty)) .details-content {
-    margin-block-start: var(--spacing--size);
+    margin-block-start: 0;
   }
 
   .menu__item + .menu__item {
-    margin-block-start: var(--spacing--size);
+    margin-block-start: 8px;
   }
 
   .menu .menu__heading--empty {
@@ -113,6 +113,18 @@
 
   .menu__heading__accordion {
     display: none;
+  }
+
+  .menu__item a {
+    color: var(--color-foreground);
+    text-decoration: none;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    transition: opacity 0.3s ease;
+  }
+
+  .menu__item a:hover {
+    opacity: 0.6;
   }
 
   @media screen and (max-width: 749px) {

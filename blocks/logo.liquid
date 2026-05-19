@@ -59,13 +59,46 @@
   "
   {{ block.shopify_attributes }}
 >
-  {% if logo_image %}
-    <div class="logo-block__image-wrapper">
-      {{ logo_image }}
-    </div>
-  {% else %}
-    {% render 'jumbo-text', text: shop.name %}
-  {% endif %}
+  <div class="logo-block__content">
+    {% if logo_image %}
+      <div class="logo-block__image-wrapper">
+        {{ logo_image }}
+      </div>
+    {% else %}
+      {% render 'jumbo-text', text: shop.name %}
+    {% endif %}
+
+    {% if block_settings.tagline != blank %}
+      <div class="logo-block__tagline paragraph">
+        {{ block_settings.tagline }}
+      </div>
+    {% endif %}
+
+    {% if block_settings.show_social %}
+      <div class="logo-block__social">
+        {% if block_settings.facebook_url != blank %}
+          <a href="{{ block_settings.facebook_url }}" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="logo-block__social-icon">{% render 'icon', icon: 'facebook' %}</svg>
+          </a>
+        {% endif %}
+        {% if block_settings.instagram_url != blank %}
+          <a href="{{ block_settings.instagram_url }}" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="logo-block__social-icon">{% render 'icon', icon: 'instagram' %}</svg>
+          </a>
+        {% endif %}
+        {% if block_settings.twitter_url != blank %}
+          <a href="{{ block_settings.twitter_url }}" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="logo-block__social-icon">{% render 'icon', icon: 'twitter' %}</svg>
+          </a>
+        {% endif %}
+        {% if block_settings.tiktok_url != blank %}
+          <a href="{{ block_settings.tiktok_url }}" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="logo-block__social-icon">{% render 'icon', icon: 'tiktok' %}</svg>
+          </a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
 </div>
 
 {% stylesheet %}
@@ -87,16 +120,63 @@
     }
   }
 
+  .logo-block__content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
   .logo-block__image-wrapper {
     display: flex;
     width: 100%;
     max-width: 100%;
     max-height: 100%;
+    filter: brightness(0) invert(1);
   }
 
   .logo-block__image {
     object-fit: contain;
     width: 100%;
+  }
+
+  .logo-block__tagline {
+    color: var(--color-foreground);
+    max-width: 250px;
+    line-height: 1.6;
+    font-size: 15px;
+    opacity: 0.8;
+  }
+
+  .logo-block__social {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+  }
+
+  .logo-block__social a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    aspect-ratio: 1 / 1;
+    background-color: var(--color-background-2, rgba(0,0,0,0.06));
+    border-radius: 50%;
+    color: var(--color-foreground);
+    transition: all 0.3s ease;
+  }
+
+  .logo-block__social a:hover {
+    opacity: 0.8;
+    transform: translateY(-2px);
+  }
+
+  .logo-block__social svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    display: block;
   }
 {% endstylesheet %}
 
@@ -140,6 +220,42 @@
     {
       "type": "paragraph",
       "content": "t:content.edit_logo_in_theme_settings"
+    },
+    {
+      "type": "textarea",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Luxury nail rituals, delivered with care to your comfort."
+    },
+    {
+      "type": "header",
+      "content": "Social Media"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social",
+      "label": "Show social icons",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "facebook_url",
+      "label": "Facebook"
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram"
+    },
+    {
+      "type": "url",
+      "id": "twitter_url",
+      "label": "Twitter/X"
+    },
+    {
+      "type": "url",
+      "id": "tiktok_url",
+      "label": "TikTok"
     },
     {
       "type": "header",

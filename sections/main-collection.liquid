@@ -31,6 +31,77 @@
   infinite-scroll="{{ section.settings.enable_infinite_scroll }}"
 >
   {% render 'skip-to-content-link', href: '#ResultsList', text: 'accessibility.skip_to_results_list' %}
+{% if collection.metafields.custom.subcatagory.value != blank %}
+  
+  <div class="sub-category-wrapper">
+
+    {% for sub_collection in collection.metafields.custom.subcatagory.value %}
+
+      <a href="{{ sub_collection.url }}" class="sub-category-item">
+
+        <div class="sub-category-image">
+
+          {% if sub_collection.image %}
+            <img
+              src="{{ sub_collection.image | image_url: width: 300 }}"
+              alt="{{ sub_collection.title }}"
+              loading="lazy"
+            >
+          {% endif %}
+
+        </div>
+
+        <h4>{{ sub_collection.title }}</h4>
+
+      </a>
+
+    {% endfor %}
+
+  </div>
+
+{% endif %}
+<style>
+  .sub-category-wrapper{
+  display:flex;
+  justify-content:center;
+  gap:40px;
+  flex-wrap:wrap;
+  padding:40px 20px;
+  background:#f5f4ea;
+}
+
+.sub-category-item{
+  text-align:center;
+  text-decoration:none;
+  width:150px;
+}
+
+.sub-category-image{
+  width:130px;
+  height:130px;
+  border-radius:50%;
+  background:#0077c8;
+  overflow:hidden;
+  margin:0 auto 15px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.sub-category-image img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:50%;
+}
+
+.sub-category-item h4{
+  font-size:16px;
+  font-weight:500;
+  color:#111;
+  margin:0;
+}
+</style>
 
   <div
     class="collection-wrapper grid gap-style{% if section.settings.product_grid_width == 'full-width' %} collection-wrapper--grid-full-width{% endif %}"

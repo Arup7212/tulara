@@ -125,48 +125,103 @@
 
   <!-- Step 4: Booking Section (Calendar - Revealed on Book Now) -->
   <div class="ritual-booking-overlay" x-show="bookingOpen" x-transition x-cloak>
-     <div class="booking-modal-pdp">
-        <div class="booking-modal-pdp__header">
-           <h2>Secure Your Ritual</h2>
-           <button @click="bookingOpen = false"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    <div class="booking-modal__content" style="max-width: 900px;">
+      <!-- Sidebar -->
+      <aside class="booking-sidebar" style="width: 35%;">
+        <div class="booking-brand">
+          <h2 class="booking-brand__name">Tulayraa</h2>
+          <p class="booking-brand__tagline">The Art of Intentional Beauty</p>
         </div>
-        <div class="booking-modal-pdp__body">
-           <!-- Calendar & Time Logic from before but stylized -->
-           <div class="booking-step-title">Select Date & Time</div>
-           <div class="pdp-calendar-wrap">
-              <!-- Calendar Grid -->
-              <div class="pdp-calendar-grid">
-                 <template x-for="day in days">
-                    <div 
-                      class="pdp-calendar-day" 
-                      :class="{ 'selected': bookingDate == day.full, 'disabled': !day.available }"
-                      @click="if(day.available) bookingDate = day.full"
-                      x-text="day.num"
-                    ></div>
-                 </template>
-              </div>
-           </div>
-           
-           <div class="pdp-time-grid">
-              <template x-for="slot in timeSlots">
-                 <div 
-                   class="pdp-time-chip" 
-                   :class="{ 'selected': bookingTime == slot }"
-                   @click="bookingTime = slot"
-                   x-text="slot"
-                 ></div>
-              </template>
-           </div>
 
-           <div class="booking-form-pdp">
-              <input type="text" x-model="address.full" class="pdp-input" placeholder="Your Service Address">
-              <button class="tulayraa-btn tulayraa-btn--primary" style="width: 100%;" @click="reserveRitual()" :disabled="!isReadyToBook">
-                 <span x-show="!loading">Confirm & Reserve</span>
-                 <span x-show="loading">Securing...</span>
-              </button>
-           </div>
+        <nav class="booking-steps">
+          <div class="booking-step active">
+            <div class="step-number">1</div>
+            <div class="step-info">
+              <span class="step-title">Date & Time</span>
+              <span class="step-desc">Select your ritual moment</span>
+            </div>
+          </div>
+          <div class="booking-step" style="opacity: 0.25;">
+            <div class="step-number">2</div>
+            <div class="step-info">
+              <span class="step-title">Details</span>
+              <span class="step-desc">Personalize your experience</span>
+            </div>
+          </div>
+        </nav>
+
+        <div class="booking-sidebar__footer">
+          <div class="ritual-preview">
+            <span class="ritual-preview__name">{{ product.title }}</span>
+            <h3 class="ritual-preview__price" x-text="totalPriceFormatted"></h3>
+          </div>
         </div>
-     </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="booking-main" style="width: 65%;">
+        <div x-show="!loading">
+          <h2 class="booking-main__title">Select a Date</h2>
+          
+          <div class="calendar-nav">
+            <button @click="prevMonth()" class="calendar-arrow" style="background:none; border:none; cursor:pointer;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <span class="calendar-month" x-text="monthNames[currentMonth] + ' ' + currentYear"></span>
+            <button @click="nextMonth()" class="calendar-arrow" style="background:none; border:none; cursor:pointer;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+          </div>
+
+          <div class="calendar-grid">
+            <div class="calendar-weekday">Su</div>
+            <div class="calendar-weekday">Mo</div>
+            <div class="calendar-weekday">Tu</div>
+            <div class="calendar-weekday">We</div>
+            <div class="calendar-weekday">Th</div>
+            <div class="calendar-weekday">Fr</div>
+            <div class="calendar-weekday">Sa</div>
+            
+            <template x-for="day in days">
+              <div 
+                class="calendar-day" 
+                :class="{ 'selected': bookingDate === day.full, 'disabled': !day.num || !day.available }" 
+                x-text="day.num"
+                @click="if(day.available) bookingDate = day.full"
+              ></div>
+            </template>
+          </div>
+
+          <div class="times-section">
+            <h4 class="times-title">Available Times</h4>
+            <div class="time-slots">
+              <template x-for="slot in timeSlots">
+                <div 
+                  class="time-slot" 
+                  :class="{ 'selected': bookingTime === slot }" 
+                  x-text="slot"
+                  @click="bookingTime = slot"
+                ></div>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="booking-footer">
+          <button class="btn-cancel" @click="bookingOpen = false">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <span>Cancel</span>
+          </button>
+          
+          <button class="btn-continue" @click="reserveRitual()" :disabled="!isReadyToBook">
+            <span x-show="!loading">Confirm Ritual</span>
+            <span x-show="loading">Securing...</span>
+            <svg x-show="!loading" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+        </footer>
+      </main>
+    </div>
   </div>
 </div>
 
@@ -431,76 +486,273 @@
     padding: 2rem;
   }
 
-  .booking-modal-pdp {
-    background: white;
+  .booking-modal__content {
+    position: relative;
     width: 100%;
-    max-width: 500px;
-    border-radius: 32px;
+    max-width: 960px;
+    background: white;
+    border-radius: 40px;
     overflow: hidden;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.2);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.1);
+    pointer-events: auto;
+    display: flex;
+    height: 700px;
+    max-height: 90vh;
+    text-align: left;
   }
 
-  .booking-modal-pdp__header {
-    padding: 1.5rem 2rem;
-    background: var(--tulayraa-beige);
+  /* Sidebar */
+  .booking-sidebar {
+    width: 35%;
+    background: #F8F8F6;
+    padding: 4rem 3.5rem;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(0,0,0,0.03);
+  }
+
+  .booking-brand__name {
+    font-family: var(--font-heading-family);
+    font-size: 44px;
+    color: var(--tulayraa-charcoal);
+    margin: 0;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .booking-brand__tagline {
+    font-size: 0.95rem;
+    opacity: 0.6;
+    margin-top: 0.8rem;
+    line-height: 1.4;
+  }
+
+  .booking-steps {
+    margin-top: 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .booking-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    opacity: 0.25;
+    transition: all 0.4s ease;
+  }
+
+  .booking-step.active {
+    opacity: 1;
+  }
+
+  .step-number {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #EAEAEA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: all 0.4s ease;
+  }
+
+  .active .step-number {
+    background: var(--tulayraa-charcoal);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .step-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .step-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--tulayraa-charcoal);
+  }
+
+  .step-desc {
+    font-size: 0.85rem;
+    opacity: 0.7;
+    margin-top: 0.3rem;
+  }
+
+  .booking-sidebar__footer {
+    margin-top: auto;
+  }
+
+  .ritual-preview {
+    border-top: 1px solid rgba(0,0,0,0.06);
+    padding-top: 2.5rem;
+  }
+
+  .ritual-preview__name {
+    font-size: 0.9rem;
+    opacity: 0.5;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .ritual-preview__price {
+    font-family: var(--font-heading-family);
+    font-size: 2rem;
+    margin-top: 0.5rem;
+    color: var(--tulayraa-charcoal);
+  }
+
+  /* Main Area */
+  .booking-main {
+    width: 65%;
+    padding: 4rem 5rem;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background: white;
+  }
+
+  .booking-main__title {
+    font-family: var(--font-heading-family);
+    font-size: 2.4rem;
+    margin-bottom: 2.5rem;
+    color: var(--tulayraa-charcoal);
+  }
+
+  /* Calendar */
+  .calendar-nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 2rem;
   }
 
-  .booking-modal-pdp__header h2 { font-size: 1.25rem; margin: 0; font-weight: 700; }
-  .booking-modal-pdp__header button { background: none; border: none; cursor: pointer; color: var(--tulayraa-taupe); }
+  .calendar-month {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
 
-  .booking-modal-pdp__body { padding: 2rem; }
-
-  .pdp-calendar-grid {
+  .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
-    margin: 1.5rem 0;
+    gap: 0.5rem;
+    text-align: center;
   }
 
-  .pdp-calendar-day {
+  .calendar-weekday {
+    font-size: 0.75rem;
+    opacity: 0.4;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding-bottom: 1.5rem;
+  }
+
+  .calendar-day {
     aspect-ratio: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.9rem;
-    border-radius: 50%;
     cursor: pointer;
+    border-radius: 50%;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .calendar-day:hover:not(.disabled) {
+    background: #F5F5F0;
+  }
+
+  .calendar-day.selected {
+    background: var(--tulayraa-charcoal);
+    color: white;
+    transform: scale(1.1);
+  }
+
+  .calendar-day.disabled {
+    opacity: 0.15;
+    cursor: not-allowed;
+  }
+
+  /* Times */
+  .times-section {
+    margin-top: 3.5rem;
+  }
+
+  .times-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--tulayraa-charcoal);
+  }
+
+  .time-slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .time-slot {
+    padding: 0.9rem 1.8rem;
+    background: #F0F0F0;
+    border-radius: 100px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+  }
+
+  .time-slot.selected {
+    background: #F7E7CE;
+    color: var(--tulayraa-charcoal);
+    border-color: rgba(179, 139, 109, 0.2);
+  }
+
+  /* Footer Buttons */
+  .booking-footer {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 4rem;
+  }
+
+  .btn-cancel {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: none;
+    border: 1.5px dashed #D0D0D0;
+    padding: 0.9rem 2.2rem;
+    border-radius: 100px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: #777;
     transition: all 0.3s ease;
   }
 
-  .pdp-calendar-day:hover:not(.disabled) { background: var(--tulayraa-beige); }
-  .pdp-calendar-day.selected { background: var(--tulayraa-charcoal); color: white; }
-  .pdp-calendar-day.disabled { opacity: 0.2; cursor: not-allowed; }
-
-  .pdp-time-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 2rem;
-  }
-
-  .pdp-time-chip {
-    padding: 0.75rem;
-    text-align: center;
-    background: #F8F7F2;
-    border-radius: 10px;
-    font-size: 0.8rem;
-    font-weight: 700;
+  .btn-continue {
+    background: var(--tulayraa-charcoal);
+    color: white;
+    padding: 1rem 3rem;
+    border-radius: 100px;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .pdp-time-chip.selected { background: var(--tulayraa-charcoal); color: white; }
-
-  .pdp-input {
-    width: 100%;
-    padding: 1rem;
-    border-radius: 12px;
-    border: 1px solid #E8E4D9;
-    margin-bottom: 1.5rem;
-    outline: none;
+  .btn-continue:hover {
+    background: #000;
+    transform: translateX(8px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
   }
 
   @media screen and (max-width: 749px) {
@@ -520,6 +772,9 @@
       bookingTime: null,
       address: { full: '' },
       loading: false,
+      currentMonth: new Date().getMonth(),
+      currentYear: new Date().getFullYear(),
+      monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
       days: [],
       timeSlots: ['10:00 AM', '11:30 AM', '1:00 PM', '3:00 PM', '4:30 PM', '6:00 PM'],
       basePrice: {{ product.price }},
@@ -535,16 +790,45 @@
       },
 
       generateCalendar() {
+        this.days = [];
+        const firstDay = new Date(this.currentYear, this.currentMonth, 1).getDay();
+        const daysInMonth = new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
+        
+        for (let i = 0; i < firstDay; i++) {
+          this.days.push({ num: '', full: '', available: false });
+        }
+        
         const now = new Date();
-        for (let i = 0; i < 21; i++) {
-          const d = new Date();
-          d.setDate(now.getDate() + i);
+        now.setHours(0,0,0,0);
+
+        for (let i = 1; i <= daysInMonth; i++) {
+          const d = new Date(this.currentYear, this.currentMonth, i);
           this.days.push({
-            num: d.getDate(),
+            num: i,
             full: d.toISOString().split('T')[0],
-            available: i % 7 !== 0
+            available: d >= now
           });
         }
+      },
+
+      nextMonth() {
+        if (this.currentMonth === 11) {
+          this.currentMonth = 0;
+          this.currentYear++;
+        } else {
+          this.currentMonth++;
+        }
+        this.generateCalendar();
+      },
+
+      prevMonth() {
+        if (this.currentMonth === 0) {
+          this.currentMonth = 11;
+          this.currentYear--;
+        } else {
+          this.currentMonth--;
+        }
+        this.generateCalendar();
       },
 
       toggleAddOn(addon) {
@@ -573,7 +857,7 @@
       },
 
       get isReadyToBook() {
-        return this.bookingDate && this.bookingTime && this.address.full;
+        return this.bookingDate && this.bookingTime;
       },
 
       openBooking() {
@@ -587,8 +871,7 @@
           quantity: 1,
           properties: {
             'Date': this.bookingDate,
-            'Time': this.bookingTime,
-            'Address': this.address.full
+            'Time': this.bookingTime
           }
         }];
 

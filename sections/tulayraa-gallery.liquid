@@ -1,7 +1,9 @@
 {%- style -%}
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+
   .section-{{ section.id }}-padding {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    padding-top: {{ section.settings.padding_top | times: 0.5 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.5 | round: 0 }}px;
   }
 
   @media screen and (min-width: 750px) {
@@ -10,20 +12,36 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  .gallery-{{ section.id }} .tulayraa-hero__title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    font-weight: 500;
+  }
+
+  {% if section.settings.shadow_image != blank %}
+    .gallery-{{ section.id }} .shadow-play-overlay {
+      background-image: url('{{ section.settings.shadow_image | image_url: width: 2000 }}') !important;
+      opacity: 0.08;
+    }
+  {% endif %}
 {%- endstyle -%}
 
-<div class="tulayraa-gallery color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding">
-  <div class="page-width">
-    <div class="tulayraa-gallery__header" style="text-align: center; margin-bottom: 5rem;">
-      <div class="tulayraa-hero__tagline" data-aos="fade-up">Social Rituals</div>
-      <h2 class="tulayraa-hero__title" style="font-size: clamp(2rem, 4vw, 3rem);" data-aos="fade-up">A Glimpse of the Sanctuary</h2>
+<div class="tulayraa-gallery gallery-{{ section.id }} section-{{ section.id }}-padding">
+  <!-- Shadow Play (Gobo Effect) -->
+  <div class="shadow-play-overlay"></div>
+
+  <div class="page-width" style="position: relative; z-index: 2;">
+    <div class="tulayraa-gallery__header" style="text-align: center; margin-bottom: 4rem;">
+      <div class="tulayraa-hero__tagline" data-aos="fade-up" style="font-size: 0.75rem; letter-spacing: 0.2em; margin-bottom: 1.5rem;">Social Rituals</div>
+      <h2 class="tulayraa-hero__title" data-aos="fade-up">A Glimpse of the Sanctuary</h2>
     </div>
 
     <div class="tulayraa-gallery__grid">
       {% for block in section.blocks %}
         <div class="gallery-item" data-aos="zoom-in" data-aos-delay="{{ forloop.index | times: 100 }}" {{ block.shopify_attributes }}>
           {% if block.settings.image != blank %}
-            {{ block.settings.image | image_url: width: 800 | image_tag: class: 'gallery-img', loading: 'lazy' }}
+            {{ block.settings.image | image_url: width: 600 | image_tag: class: 'gallery-img', loading: 'lazy' }}
           {% else %}
             {{ 'lifestyle-' | append: forloop.index | placeholder_svg_tag: 'placeholder-svg gallery-img' }}
           {% endif %}
@@ -33,22 +51,47 @@
         </div>
       {% endfor %}
     </div>
+
+    {% if section.settings.button_label != blank %}
+      <div style="text-align: center; margin-top: 4rem;">
+        <a href="{{ section.settings.button_link }}" class="tulayraa-btn tulayraa-btn--secondary" style="border: 1px solid #4A5568; color: #4A5568; padding: 1rem 2.5rem; font-size: 0.8rem;">
+          {{ section.settings.button_label }}
+        </a>
+      </div>
+    {% endif %}
   </div>
 </div>
 
 <style>
+  .tulayraa-gallery {
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+  }
+
+  .shadow-play-overlay {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.06;
+    pointer-events: none;
+    z-index: 1;
+  }
+
   .tulayraa-gallery__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.2rem;
   }
 
   .gallery-item {
     position: relative;
-    border-radius: 20px;
+    border-radius: 12px;
     overflow: hidden;
     aspect-ratio: 1;
     cursor: pointer;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.04);
   }
 
   .gallery-img {
@@ -59,13 +102,13 @@
   }
 
   .gallery-item:hover .gallery-img {
-    transform: scale(1.1);
+    transform: scale(1.08);
   }
 
   .gallery-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.2);
+    background: rgba(0,0,0,0.15);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -82,12 +125,13 @@
     font-family: var(--font-body-family);
     font-weight: 500;
     letter-spacing: 0.1em;
+    font-size: 0.85rem;
   }
 
   @media screen and (max-width: 749px) {
     .tulayraa-gallery__grid {
       grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+      gap: 0.8rem;
     }
   }
 </style>
@@ -99,10 +143,24 @@
   "class": "section",
   "settings": [
     {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "Color Scheme",
-      "default": "background-1"
+      "type": "image_picker",
+      "id": "shadow_image",
+      "label": "Shadow Play Image (Tree branches)"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "View All Rituals"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
     },
     {
       "type": "header",
@@ -112,7 +170,7 @@
       "type": "range",
       "id": "padding_top",
       "min": 0,
-      "max": 100,
+      "max": 200,
       "step": 4,
       "unit": "px",
       "label": "Padding Top",
@@ -122,7 +180,7 @@
       "type": "range",
       "id": "padding_bottom",
       "min": 0,
-      "max": 100,
+      "max": 200,
       "step": 4,
       "unit": "px",
       "label": "Padding Bottom",

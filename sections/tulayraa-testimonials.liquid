@@ -12,48 +12,116 @@
   }
 {%- endstyle -%}
 
+<!-- Swiper CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
 <div class="tulayraa-testimonials color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding">
   <div class="page-width">
-    <div class="tulayraa-testimonials__header" style="text-align: center; margin-bottom: 5rem;">
-      <div class="tulayraa-hero__tagline" data-aos="fade-up">Ritual Stories</div>
-      <h2 class="tulayraa-hero__title" style="font-size: clamp(2rem, 4vw, 3rem);" data-aos="fade-up">Trusted by Modern Spirits</h2>
+    <div class="testimonials__header">
+      {% if section.settings.tagline != blank %}
+        <span class="testimonials__tagline paragraph">{{ section.settings.tagline }}</span>
+      {% endif %}
+      {% if section.settings.title != blank %}
+        <h2 class="testimonials__title h1">{{ section.settings.title }}</h2>
+      {% endif %}
+      {% if section.settings.description != blank %}
+        <div class="testimonials__description paragraph">
+          {{ section.settings.description }}
+        </div>
+      {% endif %}
     </div>
 
-    <div class="tulayraa-testimonials__grid" x-data="{ active: 0 }">
-      <div class="testimonials-wrapper">
-        {% for block in section.blocks %}
-          <div 
-            class="testimonial-slide" 
-            x-show="active === {{ forloop.index0 }}" 
-            x-transition:enter="animate-fade-up"
-            {{ block.shopify_attributes }}
-          >
-            <div class="testimonial-content">
-              <div class="testimonial-stars">
-                {% for i in (1..5) %}
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                {% endfor %}
-              </div>
-              <p class="testimonial-text">“{{ block.settings.text }}”</p>
-              <div class="testimonial-author">
-                <div class="author-info">
-                  <span class="author-name">{{ block.settings.author }}</span>
-                  <span class="author-role">{{ block.settings.role }}</span>
+    <div class="testimonials__slider-container">
+      <div class="swiper testimonials-swiper">
+        <div class="swiper-wrapper">
+          {% for block in section.blocks %}
+            <div class="swiper-slide" {{ block.shopify_attributes }}>
+              <div class="testimonial-card">
+                <div class="testimonial-card__image">
+                  {% if block.settings.image != blank %}
+                    {{ block.settings.image | image_url: width: 400 | image_tag: loading: 'lazy' }}
+                  {% else %}
+                    {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                  {% endif %}
+                </div>
+                <div class="testimonial-card__content">
+                  <div class="testimonial-card__stars">
+                    {% for i in (1..5) %}
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="#C5A059"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    {% endfor %}
+                  </div>
+                  <div class="testimonial-card__quote">
+                    <svg width="24" height="20" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M6 0C8.20914 0 10 1.79086 10 4C10 6.20914 8.20914 8 6 8H2C2 10.2091 3.79086 12 6 12H7V16H6C2.68629 16 0 13.3137 0 10V4C0 1.79086 1.79086 0 4 0H6ZM20 0C22.2091 0 24 1.79086 24 4C24 6.20914 22.2091 8 20 8H16C16 10.2091 17.7909 12 20 12H21V16H20C16.6863 16 14 13.3137 14 10V4C14 1.79086 15.7909 0 18 0H20Z" fill="#DBC9B3"/>
+                    </svg>
+                  </div>
+                  <div class="testimonial-card__text paragraph">{{ block.settings.text }}</div>
+                  <div class="testimonial-card__footer">
+                    <span class="author-name">{{ block.settings.author }}</span>
+                    <span class="author-location">{{ block.settings.role }}</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        {% endfor %}
+          {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        <div class="swiper-pagination"></div>
+
+        <!-- Pagination -->
+        <div class="swiper-pagination"></div>
       </div>
 
-      <div class="testimonial-nav">
-        {% for block in section.blocks %}
-          <button 
-            class="nav-dot" 
-            :class="{ 'active': active === {{ forloop.index0 }} }" 
-            @click="active = {{ forloop.index0 }}"
-          ></button>
-        {% endfor %}
+      <!-- Navigation -->
+      <div class="swiper-button-prev testimonials-prev">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </div>
+      <div class="swiper-button-next testimonials-next">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+    </div>
+
+    <!-- Statistics Bar -->
+    <div class="testimonials__stats-bar">
+      <div class="stat-item">
+        <div class="stat-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B5E3C" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ section.settings.stat_1_val }}</div>
+          <div class="stat-label">{{ section.settings.stat_1_label }}</div>
+        </div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B5E3C" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ section.settings.stat_2_val }}</div>
+          <div class="stat-label">{{ section.settings.stat_2_label }}</div>
+        </div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B5E3C" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ section.settings.stat_3_val }}</div>
+          <div class="stat-label">{{ section.settings.stat_3_label }}</div>
+        </div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B5E3C" stroke-width="1.5"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8a7 7 0 0 1-7 7c-1.18 0-2.34-.31-3.5-.82L11 20z"></path><path d="M11 20c0-3.1 2.3-5.5 5-6"></path></svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ section.settings.stat_4_val }}</div>
+          <div class="stat-label">{{ section.settings.stat_4_label }}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -61,86 +129,307 @@
 
 <style>
   .tulayraa-testimonials {
-    background-color: var(--tulayraa-beige);
-    position: relative;
     overflow: hidden;
   }
 
-  .testimonials-wrapper {
-    max-width: 800px;
-    margin: 0 auto;
-    min-height: 400px;
+  .testimonials__header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .testimonials__tagline {
+    color: var(--color-foreground);
+    display: block;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+
+  .testimonials__title {
+    color: var(--color-foreground);
+    margin-bottom: 1.2rem;
+  }
+
+  .testimonials__description {
+    margin: 0 auto 3rem;
+    max-width: 600px;
+  }
+
+  .testimonials__divider {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 20px;
+    margin-top: 2rem;
   }
 
-  .testimonial-slide {
-    text-align: center;
+  .divider-line {
+    height: 1px;
+    background-color: #EBD9C3;
+    width: 60px;
   }
 
-  .testimonial-stars {
-    color: var(--tulayraa-taupe);
-    margin-bottom: 2rem;
+  .divider-icon {
     display: flex;
+    align-items: center;
     justify-content: center;
-    gap: 0.25rem;
+    background: white;
+    padding: 10px;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
   }
 
-  .testimonial-text {
-    font-family: var(--font-heading-family);
-    font-size: clamp(1.5rem, 3vw, 2rem);
-    font-weight: 500;
-    line-height: 1.4;
-    color: var(--tulayraa-charcoal);
+  .testimonials__slider-container {
+    position: relative;
+    padding: 0 100px;
     margin-bottom: 3rem;
-    font-style: italic;
   }
 
-  .testimonial-author {
+  @media screen and (max-width: 990px) {
+    .testimonials__slider-container {
+      padding: 0 1rem;
+    }
+  }
+
+  .testimonials-swiper {
+    padding: 20px 0 60px;
+  }
+
+  .testimonial-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: row;
+    gap: 1.2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    height: 100%;
+    align-items: center;
+    text-align: left;
+  }
+
+  .testimonial-card__image {
+    flex: 0 0 140px;
+    width: 140px;
+    height: 190px;
+    border-radius: 70px; /* Perfect pillar shape */
+    overflow: hidden;
+  }
+
+  .testimonial-card__image img,
+  .testimonial-card__image svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .testimonial-card__content {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
+  }
+
+  .testimonial-card__stars {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 0.5rem;
+    justify-content: flex-start;
+  }
+
+  .testimonial-card__quote {
+    margin-bottom: 1.5rem;
+    opacity: 0.6;
+  }
+
+  .testimonial-card__text {
+    margin-bottom: 1.5rem;
+  }
+
+  .testimonial-card__footer {
+    border-top: 1px solid #F5E6D3;
+    padding-top: 1.5rem;
   }
 
   .author-name {
-    font-family: var(--font-heading-family);
-    font-weight: 700;
-    font-size: 1.1rem;
     display: block;
-    color: var(--tulayraa-charcoal);
+    color: var(--color-foreground);
+    margin-bottom: 2px;
   }
 
-  .author-role {
-    font-family: var(--font-body-family);
-    font-size: 0.9rem;
-    color: var(--tulayraa-taupe);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+  .author-location {
+    color: var(--color-foreground);
+    opacity: 0.8;
   }
 
-  .testimonial-nav {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 3rem;
-  }
-
-  .nav-dot {
-    width: 10px;
-    height: 10px;
+  .testimonials-prev,
+  .testimonials-next {
+    width: 50px;
+    height: 50px;
+    background: #F8F1E9;
     border-radius: 50%;
-    background: var(--tulayraa-champagne);
-    border: none;
-    cursor: pointer;
+    color: #8B5E3C;
+    transition: all 0.3s ease;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: inherit;
+    margin: 0;
+  }
+
+  .testimonials-prev:after,
+  .testimonials-next:after {
+    display: none;
+  }
+
+  .testimonials-prev:hover,
+  .testimonials-next:hover {
+    background: #8B5E3C;
+    color: white;
+  }
+
+  .testimonials-prev { left: 25px; }
+  .testimonials-next { right: 25px; }
+
+  .swiper-pagination-bullet {
+    background: #EBD9C3;
+    opacity: 1;
+    width: 8px;
+    height: 8px;
     transition: all 0.3s ease;
   }
 
-  .nav-dot.active {
-    background: var(--tulayraa-taupe);
-    transform: scale(1.3);
+  .swiper-pagination-bullet-active {
+    background: #8B5E3C;
+    transform: scale(1.5);
+  }
+.swiper{
+  overflow: hidden !important;
+}
+  /* Stats Bar */
+  .testimonials__stats-bar {
+    border-radius: 30px;
+    display: flex;
+    padding: 2.5rem;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid #F5E6D3;
+    margin-top: 1rem;
+    background: white;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+  }
+
+  .stat-content {
+    max-width: 150px;
+  }
+
+  .stat-value {
+    font-family: var(--font-heading-family);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1A1A1A;
+    line-height: 1;
+    margin-bottom: 5px;
+  }
+
+  .stat-label {
+    font-family: var(--font-body-family);
+    font-size: 0.8rem;
+    line-height: 1.3;
+    color: #666;
+  }
+
+  .stat-divider {
+    width: 1px;
+    height: 40px;
+    background: #EBD9C3;
+    opacity: 0.5;
+  }
+
+  @media screen and (max-width: 990px) {
+    .testimonial-card {
+      flex-direction: column;
+      padding: 1.5rem;
+      text-align: center;
+      gap: 1.5rem;
+    }
+
+    .testimonial-card__image {
+      flex: 0 0 150px;
+      height: 150px;
+      margin: 0 auto;
+    }
+
+    .testimonial-card__stars {
+      justify-content: center;
+    }
+
+    .testimonials__stats-bar {
+      flex-direction: column;
+      gap: 3rem;
+    }
+
+    .stat-divider {
+      display: none;
+    }
+
+    .stat-item {
+      max-width: none;
+      width: 100%;
+    }
   }
 </style>
+
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const swiper = new Swiper('.testimonials-swiper', {
+      slidesPerView: 1,
+      spaceBetween: 24,
+      loop: true,
+      centeredSlides: false,
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false,
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.testimonials-next',
+        prevEl: '.testimonials-prev',
+      },
+      breakpoints: {
+        990: {
+          slidesPerView: 2,
+        },
+        1400: {
+          slidesPerView: 3,
+        }
+      }
+    });
+  });
+</script>
 
 {% schema %}
 {
@@ -149,10 +438,80 @@
   "class": "section",
   "settings": [
     {
+      "type": "inline_richtext",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "TESTIMONIALS"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Heading",
+      "default": "Real Rituals. Real Results."
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Hear from our beautiful community who love their nail rituals and the care that comes with every detail.</p>"
+    },
+    {
       "type": "color_scheme",
       "id": "color_scheme",
       "label": "Color Scheme",
-      "default": "background-1"
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Statistics Bar"
+    },
+    {
+      "type": "text",
+      "id": "stat_1_val",
+      "label": "Stat 1 Value",
+      "default": "4.9/5"
+    },
+    {
+      "type": "text",
+      "id": "stat_1_label",
+      "label": "Stat 1 Label",
+      "default": "Average Rating from 2K+ reviews"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_val",
+      "label": "Stat 2 Value",
+      "default": "10K+"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_label",
+      "label": "Stat 2 Label",
+      "default": "Happy Clients across India"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_val",
+      "label": "Stat 3 Value",
+      "default": "25K+"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_label",
+      "label": "Stat 3 Label",
+      "default": "Rituals Completed with love"
+    },
+    {
+      "type": "text",
+      "id": "stat_4_val",
+      "label": "Stat 4 Value",
+      "default": "98%"
+    },
+    {
+      "type": "text",
+      "id": "stat_4_label",
+      "label": "Stat 4 Label",
+      "default": "Would Recommend our rituals"
     },
     {
       "type": "header",
@@ -185,10 +544,15 @@
       "name": "Testimonial",
       "settings": [
         {
-          "type": "textarea",
+          "type": "image_picker",
+          "id": "image",
+          "label": "User/Result Image"
+        },
+        {
+          "type": "richtext",
           "id": "text",
           "label": "Testimonial Text",
-          "default": "The ritual was more than just a beauty service. It was a moment of profound peace brought directly to my doorstep."
+          "default": "<p>The ritual was more than just a beauty service. It was a moment of profound peace brought directly to my doorstep.</p>"
         },
         {
           "type": "text",
@@ -199,8 +563,8 @@
         {
           "type": "text",
           "id": "role",
-          "label": "Role/Location",
-          "default": "Bridal Client"
+          "label": "Location",
+          "default": "Bangalore, India"
         }
       ]
     }

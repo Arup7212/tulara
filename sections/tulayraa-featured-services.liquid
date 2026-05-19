@@ -19,10 +19,10 @@
   <div class="page-width">
     <div class="tulayraa-services__header" style="text-align: {{ section.settings.header_alignment }};">
       {% if section.settings.tagline != blank %}
-        <div class="tulayraa-services__tagline" data-aos="fade-up">{{ section.settings.tagline }}</div>
+        <div class="tulayraa-services__tagline paragraph" data-aos="fade-up">{{ section.settings.tagline }}</div>
       {% endif %}
       {% if section.settings.title != blank %}
-        <h2 class="tulayraa-services__title" data-aos="fade-up">{{ section.settings.title }}</h2>
+        <h2 class="tulayraa-services__title h1" data-aos="fade-up">{{ section.settings.title }}</h2>
       {% endif %}
     </div>
 
@@ -51,8 +51,8 @@
               </div>
               
               <div class="service-card__content">
-                <h3 class="service-card__title">{{ service_title }}</h3>
-                <div class="service-card__meta">
+                <h3 class="service-card__title h5">{{ service_title }}</h3>
+                <div class="service-card__meta paragraph">
                   {% if block.settings.duration != blank %}
                     <span class="service-card__duration">{{ block.settings.duration }}</span>
                   {% endif %}
@@ -73,73 +73,88 @@
 </div>
 
 <style>
-  .tulayraa-services {
-    background-color: var(--tulayraa-ivory);
-    overflow: hidden;
+  .tulayraa-services__tagline {
+    text-transform: uppercase;
+    color: var(--color-foreground);
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+  }
+
+  .tulayraa-services__title {
+    margin-top: 0;
+    margin-bottom: 2rem;
   }
 
   .swiper {
-    padding: 2rem 1rem 4rem !important;
-    overflow: visible !important;
+    padding: 1rem 1rem 4rem !important;
   }
 
   .service-card {
-    display: block;
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(10px);
-    border-radius: 40px 10px 40px 10px;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-background);
+    border-radius: 20px;
     overflow: hidden;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s ease;
     text-decoration: none;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid var(--color-border);
     height: 100%;
   }
 
   .service-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(179, 139, 109, 0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.1);
   }
 
   .service-card__image-wrap {
-    height: 300px;
+    height: 220px;
     overflow: hidden;
     position: relative;
-    margin: 1rem;
-    border-radius: 30px 5px 30px 5px;
+    border-radius: 20px 20px 0 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .service-card__image-wrap {
+      height: 180px;
+    }
   }
 
   .service-card__image {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+
+  .service-card:hover .service-card__image {
+    transform: scale(1.05);
   }
 
   .service-card__content {
-    padding: 1.5rem 2rem 2.5rem;
+    padding: 1.5rem 1rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .service-card__title {
-    font-family: var(--font-heading-family);
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    color: var(--tulayraa-charcoal);
+    margin: 0 0 0.5rem;
+    color: var(--color-foreground);
   }
 
   .service-card__meta {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    font-family: var(--font-body-family);
-    color: var(--tulayraa-taupe);
-    font-size: 0.9rem;
+    color: var(--color-foreground);
+    opacity: 0.7;
   }
 
   .service-card__price {
-    font-weight: 700;
-    color: var(--tulayraa-taupe);
+    font-weight: 600;
     margin-top: 0.5rem;
   }
 
@@ -168,10 +183,12 @@
 <script>
   function initSwiper_{{ section.id | replace: '-', '_' }}() {
     new Swiper('.tulayraa-services-swiper-{{ section.id }}', {
-      slidesPerView: 1,
-      spaceBetween: 20,
-      loop: true,
+      slidesPerView: 1.15,
+      spaceBetween: 16,
+      loop: {% if section.blocks.size > 3 %}true{% else %}false{% endif %},
       centeredSlides: true,
+      watchSlidesProgress: true,
+      grabCursor: true,
       pagination: {
         el: '.swiper-pagination',
         clickable: true,
@@ -181,13 +198,15 @@
         prevEl: '.swiper-button-prev',
       },
       breakpoints: {
-        640: {
-          slidesPerView: 2,
+        750: {
+          slidesPerView: 2.5,
           spaceBetween: 30,
+          centeredSlides: false,
         },
-        1024: {
+        1200: {
           slidesPerView: 3,
           spaceBetween: 40,
+          centeredSlides: false,
         },
       },
     });
@@ -214,13 +233,13 @@
       "default": "background-1"
     },
     {
-      "type": "text",
+      "type": "inline_richtext",
       "id": "tagline",
       "label": "Tagline",
       "default": "Curated Rituals"
     },
     {
-      "type": "text",
+      "type": "inline_richtext",
       "id": "title",
       "label": "Heading",
       "default": "Luxury Beauty Rituals"

@@ -1,14 +1,1 @@
-{
-  "sections": {
-    "main": {
-      "type": "main-ritual",
-      "settings": {
-        "padding_top": 0,
-        "padding_bottom": 100
-      }
-    }
-  },
-  "order": [
-    "main"
-  ]
-}
+{"sections":{"main":{"type":"main-ritual","settings":{}}},"order":["main"]}

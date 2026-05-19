@@ -11,10 +11,8 @@
 >
   <span class="footer-utilities__text">
     &copy; {{ 'now' | date: '%Y' }}
-    {{ shop.name | link_to: routes.root_url -}}
-    {%- if block_settings.show_powered_by -%}
-      , {{ powered_by_link }}
-    {%- endif -%}
+    {{ shop.name | link_to: routes.root_url }}
+    | Powered by <a href="https://bluehorse.in" target="_blank" rel="noopener" style="color: inherit; text-decoration: none;">BlueHorse</a>
   </span>
 </div>
 

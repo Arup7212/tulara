@@ -82,6 +82,20 @@
 </div>
 
 {% stylesheet %}
+  /* Fix hover overflow on banner */
+  .slideshow-section,
+  .slideshow-section slideshow-component,
+  .slideshow-section slideshow-container,
+  .slideshow-section slideshow-slides {
+    overflow: hidden;
+  }
+
+  /* Hide the autoplay pause/play button */
+  .slideshow-section .slideshow-control.icon-pause,
+  .slideshow-section .slideshow-control.icon-play {
+    display: none !important;
+  }
+
   .slideshow-section {
     slideshow-arrows .slideshow-control:first-of-type {
       margin-inline-start: var(--padding-xs);

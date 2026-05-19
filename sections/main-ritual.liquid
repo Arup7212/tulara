@@ -1,3 +1,4 @@
+{% if product.metafields.custom.add_on_services.value != blank %}
 <div 
   class="tulayraa-ritual-experience" 
   x-data="tulayraaRitual()" 
@@ -16,130 +17,205 @@
                  class="gallery-main-img" 
                  alt="{{ product.title }}"
                  loading="eager"
+                 x-ref="mainImg"
                >
              {% endif %}
-             <div class="gallery-badge">Signature Ritual</div>
-          </div>
-          
-          <!-- Vertical Thumbnails -->
-          <div class="gallery-thumbs">
-            {% for image in product.images %}
-              <div class="gallery-thumb-item" @click="updateMainImage('{{ image | image_url: width: 1400 }}')">
-                <img src="{{ image | image_url: width: 200 }}" alt="Thumbnail">
-              </div>
-            {% endfor %}
+              {% if product.images.size > 1 %}
+                <!-- Navigation Arrows -->
+                <button class="gallery-nav prev" @click="prevImage()">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <button class="gallery-nav next" @click="nextImage()">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+
+                <!-- Image Counter -->
+                <div class="gallery-counter">
+                  <span x-text="currentImageIndex + 1"></span> / {{ product.images.size }}
+                </div>
+              {% endif %}
+           </div>
+           
+           {% if product.images.size > 1 %}
+             <!-- Horizontal Thumbnails -->
+             <div class="gallery-thumbs-horizontal">
+               {% for image in product.images %}
+                 <div 
+                   class="gallery-thumb-item" 
+                   :class="{ 'active': currentImageIndex === {{ forloop.index0 }} }"
+                   @click="updateMainImage('{{ image | image_url: width: 1400 }}', {{ forloop.index0 }})"
+                 >
+                   <img src="{{ image | image_url: width: 200 }}" alt="Thumbnail">
+                 </div>
+               {% endfor %}
+             </div>
+           {% endif %}
           </div>
         </div>
-      </div>
 
-      <!-- RIGHT SIDE (55%): Sticky Content Area -->
+      <!-- RIGHT SIDE (55%): Content Area -->
       <div class="ritual-content-side">
         <div class="ritual-sticky-wrapper">
-          <div class="ritual-vendor-label">{{ product.vendor }}</div>
-          <h1 class="ritual-main-title">{{ product.title }}</h1>
+          <h1 class="ritual-main-title-v2">{{ product.title }}</h1>
           
           <div class="ritual-short-desc">
-             Personalized luxury nail artistry designed to restore beauty, balance, and calm — from the comfort of your home.
+             {{ product.description }}
           </div>
 
-          <div class="ritual-meta-info">
-             <div class="meta-item">
-                <span class="meta-label">Duration</span>
-                <span class="meta-value">{{ product.metafields.custom.duration | default: '90' }} mins</span>
+          <div class="ritual-meta-grid">
+             <div class="meta-card">
+                <div class="meta-card__icon">
+                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                </div>
+                <div class="meta-card__text">
+                   <span class="meta-label">Duration</span>
+                   <span class="meta-value">{{ product.metafields.custom.duration | default: '90' }} mins</span>
+                </div>
              </div>
-             <div class="meta-item">
-                <span class="meta-label">Starting Price</span>
-                <span class="meta-value">{{ product.price | money }}</span>
+             <div class="meta-card">
+                <div class="meta-card__icon">
+                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                </div>
+                <div class="meta-card__text">
+                   <span class="meta-label">Starting Price</span>
+                   <span class="meta-value">{{ product.price | money }}</span>
+                </div>
              </div>
           </div>
 
-          <div class="ritual-inclusions">
-             <div class="inclusion-title">Ritual Inclusions:</div>
-             <ul class="inclusion-list">
-                <li>Professional Consultation</li>
-                <li>Signature Gel Application</li>
-                <li>Premium Aftercare Oil</li>
-                <li>Home Service Excellence</li>
-             </ul>
-          </div>
-
-          <!-- INITIAL CTA: START YOUR RITUAL -->
-          <div class="ritual-primary-action" x-show="!ritualStarted">
-             <button class="tulayraa-ritual-btn" @click="startRitual()">
-                Start Your Ritual
-             </button>
-          </div>
-
-          <!-- REVEALED SECTION: COMPLETE YOUR RITUAL -->
-          <div 
-            class="ritual-addon-reveal" 
-            x-show="ritualStarted" 
-            x-transition:enter="ritual-expand-enter"
-            x-cloak
-          >
-             <div class="addon-header">
-                <h2 class="addon-title">Complete Your Ritual</h2>
-                <p class="addon-subtitle">Enhance your experience with thoughtful finishing touches.</p>
+          <div class="ritual-inclusions-v2">
+             <div class="inclusion-title">RITUAL INCLUSIONS</div>
+             <div class="inclusions-grid-2x2">
+                <div class="inclusion-item">
+                   <div class="inclusion-icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+                   <span>Professional Consultation</span>
+                </div>
+                <div class="inclusion-item">
+                   <div class="inclusion-icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3h12l1 9H5l1-9z"></path><path d="M9 12v8a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-8"></path></svg></div>
+                   <span>Signature Gel Application</span>
+                </div>
+                <div class="inclusion-item">
+                   <div class="inclusion-icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+                   <span>Premium Aftercare Oil</span>
+                </div>
+                <div class="inclusion-item">
+                   <div class="inclusion-icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></div>
+                   <span>Home Service Excellence</span>
+                </div>
              </div>
+          </div>
 
-             <div class="addon-cards-grid">
-                {% if product.metafields.custom.add_on_services.value != blank %}
+          <!-- CTA BUTTON -->
+          {% if product.metafields.custom.add_on_services.value != blank %}
+            <div class="ritual-primary-action" x-show="!ritualStarted">
+              <button class="tulayraa-ritual-btn book-now-style" @click="startRitual()">
+                Start Ritual <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </button>
+            </div>
+          {% endif %}
+
+          <!-- REVEALED SECTION: COMPLETE YOUR RITUAL (INLINE) -->
+          {% if product.metafields.custom.add_on_services.value != blank %}
+            <div 
+              class="ritual-addon-reveal" 
+              x-show="ritualStarted" 
+              x-transition:enter="ritual-expand-enter"
+              x-cloak
+              style="margin-top: 3rem;"
+            >
+               <div class="addon-header">
+                  <h2 class="addon-title">Complete Your Ritual</h2>
+                  <p class="addon-subtitle" style="font-size: 0.9rem; opacity: 0.6; margin-top: 0.5rem;">Enhance your experience with thoughtful finishing touches.</p>
+               </div>
+
+               <div class="addon-list-v2" style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1.5rem;">
                    {% for addon in product.metafields.custom.add_on_services.value %}
-                      <div class="luxury-addon-card" :class="{ 'is-selected': isSelected('{{ addon.variants.first.id }}') }">
-                         <div class="addon-card__img-wrap">
-                            {% if addon.featured_image %}
-                               <img src="{{ addon.featured_image | image_url: width: 200 }}" loading="lazy">
-                            {% endif %}
-                         </div>
-                         <div class="addon-card__body">
-                            <h3 class="addon-card__name">{{ addon.title }}</h3>
-                            <p class="addon-card__desc">{{ addon.description | strip_html | truncate: 60 }}</p>
-                            <div class="addon-card__meta">
-                               <span class="addon-price">₹{{ addon.price | money_without_currency }}</span>
+                      <div class="addon-group-v2">
+                         <div class="luxury-addon-row" :class="{ 'is-selected': isSelected({{ addon.variants.first.id | json }}) }" @click='toggleAddOn({
+                                    id: {{ addon.variants.first.id | json }},
+                                    title: {{ addon.title | json }},
+                                    price: {{ addon.variants.first.price | json }},
+                                    priceFormatted: {{ addon.variants.first.price | money | json }},
+                                    image: {% if addon.featured_image %}{{ addon.featured_image | image_url: width: 100 | json }}{% else %}null{% endif %}
+                                  })'>
+                            <div class="addon-row__img">
+                               {% if addon.featured_image %}
+                                  <img src="{{ addon.featured_image | image_url: width: 120 }}" loading="lazy">
+                               {% endif %}
                             </div>
-                         </div>
-                         <div class="addon-card__action">
-                            <button 
-                              class="addon-add-pill" 
-                              @click="toggleAddOn({
-                                id: '{{ addon.variants.first.id }}',
-                                title: '{{ addon.title }}',
-                                price: {{ addon.price }},
-                                priceFormatted: '{{ addon.price | money }}'
-                              })"
-                              :class="{ 'added': isSelected('{{ addon.variants.first.id }}') }"
-                            >
-                               <span x-text="isSelected('{{ addon.variants.first.id }}') ? 'Added' : 'Add'"></span>
+                            <div class="addon-row__info">
+                               <h3 class="addon-name">{{ addon.title }}</h3>
+                               <span class="addon-price">{{ addon.price | money }}</span>
+                            </div>
+                            <button class="addon-add-btn" :class="{ 'added': isSelected({{ addon.variants.first.id | json }}) }">
+                               <span x-text="isSelected({{ addon.variants.first.id | json }}) ? 'Added' : 'Add'"></span>
                             </button>
                          </div>
+
+                         <!-- NESTED SUB-ADDONS (Level 2) -->
+                         {% if addon.metafields.custom.adonproduct.value != blank %}
+                            <div class="sub-addons-tray" 
+                                 x-show="isSelected({{ addon.variants.first.id | json }})"
+                                 x-transition:enter="sub-reveal-up"
+                                 x-cloak>
+                               <div class="sub-addons-header">
+                                  <div class="sub-header-line"></div>
+                                  <span>ENHANCEMENTS FOR {{ addon.title | upcase }}</span>
+                               </div>
+                               <div class="sub-addons-list">
+                                  {% for sub_addon in addon.metafields.custom.adonproduct.value %}
+                                     <div class="sub-addon-row" 
+                                          :class="{ 'sub-selected': isSelected({{ sub_addon.variants.first.id | json }}) }"
+                                          @click.stop='toggleAddOn({
+                                             id: {{ sub_addon.variants.first.id | json }},
+                                             title: {{ sub_addon.title | json }},
+                                             price: {{ sub_addon.variants.first.price | json }},
+                                             priceFormatted: {{ sub_addon.variants.first.price | money | json }},
+                                             image: {% if sub_addon.featured_image %}{{ sub_addon.featured_image | image_url: width: 100 | json }}{% else %}null{% endif %}
+                                          })'>
+                                        <div class="sub-addon-visual">
+                                           {% if sub_addon.featured_image %}
+                                              <div class="sub-addon-img">
+                                                 <img src="{{ sub_addon.featured_image | image_url: width: 80 }}" loading="lazy">
+                                              </div>
+                                           {% endif %}
+                                           <div class="sub-addon-info">
+                                              <span class="sub-addon-name">{{ sub_addon.title }}</span>
+                                              <span class="sub-addon-price">+ {{ sub_addon.price | money }}</span>
+                                           </div>
+                                        </div>
+                                        <button class="sub-addon-plus" :class="{ 'added': isSelected({{ sub_addon.variants.first.id | json }}) }">
+                                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" x-show="!isSelected({{ sub_addon.variants.first.id | json }})"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" x-show="isSelected({{ sub_addon.variants.first.id | json }})"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                        </button>
+                                     </div>
+                                  {% endfor %}
+                               </div>
+                            </div>
+                         {% endif %}
                       </div>
                    {% endfor %}
-                {% else %}
-                   <!-- Mock Cards if metafield is empty -->
-                   <template x-for="item in mockAddOns">
-                      <div class="luxury-addon-card" :class="{ 'is-selected': isSelected(item.id) }">
-                         <div class="addon-card__img-wrap">
-                            <img :src="item.image">
-                         </div>
-                         <div class="addon-card__body">
-                            <h3 class="addon-card__name" x-text="item.title"></h3>
-                            <p class="addon-card__desc">Soft reflective metallic finish.</p>
-                            <div class="addon-card__meta">
-                               <span class="addon-price" x-text="'₹' + (item.price/100).toLocaleString()"></span>
-                            </div>
-                         </div>
-                         <div class="addon-card__action">
-                            <button 
-                              class="addon-add-pill" 
-                              @click="toggleAddOn(item)"
-                              :class="{ 'added': isSelected(item.id) }"
-                            >
-                               <span x-text="isSelected(item.id) ? 'Added' : 'Add'"></span>
-                            </button>
-                         </div>
-                      </div>
-                   </template>
-                {% endif %}
+               </div>
+            </div>
+          {% endif %}
+
+          <!-- Bottom Perks -->
+          <div class="ritual-perks-row-v2">
+             <div class="perk-card-v2">
+                <div class="perk-icon-bg"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+                <span>Premium Products</span>
+             </div>
+             <div class="perk-card-v2">
+                <div class="perk-icon-bg"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+                <span>Trained Experts</span>
+             </div>
+             <div class="perk-card-v2">
+                <div class="perk-icon-bg"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4l3 3"></path></svg></div>
+                <span>Hygienic Tools</span>
+             </div>
+             <div class="perk-card-v2">
+                <div class="perk-icon-bg"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
+                <span>At-Home Comfort</span>
              </div>
           </div>
         </div>
@@ -147,16 +223,60 @@
     </div>
   </div>
 
-  <!-- STICKY LUXURY BOOKING BAR -->
+  <!-- STICKY LUXURY BOOKING BAR (only for products with add-ons) -->
   <div 
     class="ritual-sticky-bar-wrapper" 
     x-show="ritualStarted" 
     x-transition:enter="bar-slide-up"
     x-cloak
   >
+     <!-- SELECTION SUMMARY TRAY (Accordion) -->
+     <div 
+       class="ritual-pill-summary" 
+       x-show="summaryOpen" 
+       x-transition:enter="summary-slide-up"
+       x-transition:leave="summary-slide-down"
+     >
+        <div class="summary-header">
+           <span>SELECTED SERVICES</span>
+           <button @click="summaryOpen = false" class="summary-close">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+           </button>
+        </div>
+        <div class="summary-items-list">
+           <!-- MAIN SERVICE -->
+           <div class="summary-item main-service">
+              <div class="item-visual-group">
+                 <div class="summary-item-img">
+                    <img src="{{ product.featured_image | image_url: width: 100 }}" alt="{{ product.title }}">
+                 </div>
+                 <span class="item-name">{{ product.title }}</span>
+              </div>
+              <button class="remove-item-btn" @click="resetRitual()">
+                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+           </div>
+           
+           <!-- ADDONS -->
+           <template x-for="addon in selectedAddOns" :key="addon.id">
+              <div class="summary-item addon-service">
+                 <div class="item-visual-group">
+                    <div class="summary-item-img">
+                       <img :src="addon.image" :alt="addon.title">
+                    </div>
+                    <span class="item-name" x-text="addon.title"></span>
+                 </div>
+                 <button class="remove-item-btn" @click="toggleAddOn(addon)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                 </button>
+              </div>
+           </template>
+        </div>
+     </div>
+
      <div class="ritual-pill-bar">
         <div class="pill-bar__left">
-           <div class="selection-count">
+           <div class="selection-count" @click="summaryOpen = !summaryOpen" style="cursor: pointer;">
               <span x-text="selectedAddOns.length + 1"></span>
            </div>
            <div class="price-stack">
@@ -173,145 +293,346 @@
   </div>
 
   <!-- LUXURY BOOKING MODAL (FULLSCREEN) -->
-  <div 
-    class="ritual-booking-modal" 
-    x-show="modalOpen" 
-    x-transition:enter="modal-fade-in"
-    x-cloak
-  >
-     <div class="modal-overlay" @click="closeModal()"></div>
-     <div class="modal-container">
-        <div class="modal-header">
-           <div class="modal-header__content">
-              <h2>Reserve Your Ritual</h2>
-              <p>Tulayraa — Balance is the New Beauty.</p>
-           </div>
-           <button class="modal-close-btn" @click="closeModal()">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-           </button>
+  <div class="ritual-booking-modal" x-show="modalOpen" x-transition x-cloak>
+    <div class="modal-overlay" @click="closeModal()" style="background-image: url('https://cdn.shopify.com/s/files/1/0664/0658/0287/files/ChatGPT_Image_May_13_2026_04_50_36_PM.png?v=1778671273'); background-size: cover; background-position: center;"></div>
+    <div class="booking-modal__content" style="max-width: 900px; z-index: 2001;">
+      <!-- Sidebar -->
+      <aside class="booking-sidebar" style="width: 35%;">
+        <div class="booking-brand">
+          <h2 class="booking-brand__name">Tulayraa</h2>
+          <p class="booking-brand__tagline">The Art of Intentional Beauty</p>
         </div>
 
-        <div class="modal-steps-container">
-           <!-- Step 1: Date -->
-           <div class="modal-step" x-show="currentStep === 1">
-              <div class="step-label">Step 1 — Select Date</div>
-              <div class="luxury-calendar">
-                 <div class="calendar-header">May 2026</div>
-                 <div class="calendar-grid">
-                    <template x-for="day in days">
-                       <div 
-                         class="calendar-day" 
-                         :class="{ 'active': bookingDate === day.full, 'disabled': !day.available }"
-                         @click="if(day.available) { bookingDate = day.full; currentStep = 2; }"
-                         x-text="day.num"
-                       ></div>
-                    </template>
-                 </div>
-              </div>
-           </div>
+        <nav class="booking-steps">
+          <div class="booking-step" :class="{ 'active': currentStep === 1 }">
+            <div class="step-number">1</div>
+            <div class="step-info">
+              <span class="step-title">Date & Time</span>
+              <span class="step-desc">Select your ritual moment</span>
+            </div>
+          </div>
+          <div class="booking-step" :class="{ 'active': currentStep === 2 }">
+            <div class="step-number">2</div>
+            <div class="step-info">
+              <span class="step-title">Confirmation</span>
+              <span class="step-desc">Personalize your experience</span>
+            </div>
+          </div>
+        </nav>
 
-           <!-- Step 2: Time -->
-           <div class="modal-step" x-show="currentStep === 2">
-              <div class="step-label">Step 2 — Select Time</div>
-              <div class="time-chips-grid">
-                 <template x-for="slot in timeSlots">
-                    <div 
-                      class="time-chip" 
-                      :class="{ 'active': bookingTime === slot }"
-                      @click="bookingTime = slot; currentStep = 3;"
-                      x-text="slot"
-                    ></div>
-                 </template>
-              </div>
-              <button class="step-back-btn" @click="currentStep = 1">← Back to Date</button>
-           </div>
+        <div class="booking-sidebar__footer">
+          <div class="ritual-preview">
+            <span class="ritual-preview__name">{{ product.title }}</span>
+            <h3 class="ritual-preview__price" x-text="totalPriceFormatted"></h3>
+          </div>
+        </div>
+      </aside>
 
-           <!-- Step 3: Address -->
-           <div class="modal-step" x-show="currentStep === 3">
-              <div class="step-label">Step 3 — Address Selection</div>
-              <div class="address-form">
-                 <div class="form-row">
-                    <input type="text" x-model="address.full" placeholder="Full Address" class="luxury-input">
-                 </div>
-                 <div class="form-row split">
-                    <input type="text" x-model="address.city" placeholder="City" class="luxury-input">
-                    <input type="text" x-model="address.pincode" placeholder="Pincode" class="luxury-input">
-                 </div>
-                 <div class="form-row">
-                    <input type="text" x-model="address.phone" placeholder="Phone Number" class="luxury-input">
-                 </div>
-                 <button class="detect-location-btn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
-                    Detect My Location
-                 </button>
-                 <button class="next-step-btn" :disabled="!address.full" @click="currentStep = 4">Final Review</button>
-                 <button class="step-back-btn" @click="currentStep = 2">← Back to Time</button>
-              </div>
-           </div>
+      <!-- Main Content -->
+      <main class="booking-main" style="width: 65%;">
+        <!-- Step 1: Date & Time -->
+        <div x-show="currentStep === 1" x-transition>
+          <h2 class="booking-main__title">Select a Date</h2>
+          
+          <div class="calendar-nav">
+            <button @click="prevMonth()" class="calendar-arrow" style="background:none; border:none; cursor:pointer;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <span class="calendar-month" x-text="monthNames[currentMonth] + ' ' + currentYear"></span>
+            <button @click="nextMonth()" class="calendar-arrow" style="background:none; border:none; cursor:pointer;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+          </div>
 
-           <!-- Step 4: Final Review -->
-           <div class="modal-step" x-show="currentStep === 4">
-              <div class="step-label">Step 4 — Your Ritual</div>
-              <div class="final-review-card">
-                 <div class="review-section">
-                    <h4>The Ritual</h4>
-                    <ul>
-                       <li>{{ product.title }}</li>
-                       <template x-for="addon in selectedAddOns">
-                          <li x-text="addon.title"></li>
-                       </template>
-                    </ul>
-                 </div>
-                 <div class="review-section">
-                    <h4>Booking Details</h4>
-                    <p x-text="'Date: ' + bookingDate"></p>
-                    <p x-text="'Time: ' + bookingTime"></p>
-                    <p x-text="'Location: ' + address.full"></p>
-                 </div>
-                 <div class="review-total">
-                    <span class="label">Total Ritual Value</span>
-                    <span class="value" x-text="totalPriceFormatted"></span>
-                 </div>
-              </div>
-              
-              <div class="form-row" style="margin-top: 2rem;">
-                 <label class="notes-label">Special Notes</label>
-                 <textarea x-model="notes" class="luxury-textarea" placeholder="Any bridal preferences, inspiration references, allergies, or requests?"></textarea>
-              </div>
+          <div class="calendar-grid">
+            <div class="calendar-weekday">Su</div>
+            <div class="calendar-weekday">Mo</div>
+            <div class="calendar-weekday">Tu</div>
+            <div class="calendar-weekday">We</div>
+            <div class="calendar-weekday">Th</div>
+            <div class="calendar-weekday">Fr</div>
+            <div class="calendar-weekday">Sa</div>
+            
+            <template x-for="day in days">
+              <div 
+                class="calendar-day" 
+                :class="{ 'selected': bookingDate === day.full, 'disabled': !day.num || !day.available }" 
+                x-text="day.num"
+                @click="if(day.available) bookingDate = day.full"
+              ></div>
+            </template>
+          </div>
 
-              <button class="final-reserve-btn" :disabled="loading" @click="completeRitual()">
-                 <span x-show="!loading">Reserve Your Ritual</span>
-                 <span x-show="loading">Securing Ritual...</span>
-              </button>
-              <button class="step-back-btn" @click="currentStep = 3">← Back to Address</button>
+          <div class="times-section">
+            <h4 class="times-title">Available Times</h4>
+            <div class="time-slots">
+              <template x-for="slot in timeSlots">
+                <div 
+                  class="time-slot" 
+                  :class="{ 'selected': bookingTime === slot }" 
+                  x-text="slot"
+                  @click="bookingTime = slot"
+                ></div>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Confirmation -->
+        <div x-show="currentStep === 2" x-transition>
+           <h2 class="booking-main__title">Confirm Your Ritual</h2>
+           <div class="glass-effect" style="padding: 2.5rem; margin-top: 1rem; border-radius: 30px; background: #F8F8F6;">
+             <p style="font-size: 1.1rem; margin-bottom: 1.5rem; color: #666;">You are booking your ritual for:</p>
+             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+               <div>
+                 <label style="font-size: 0.8rem; text-transform: uppercase; opacity: 0.5; font-weight: 700;">Date</label>
+                 <p style="font-size: 1.3rem; font-weight: 600;" x-text="bookingDate"></p>
+               </div>
+               <div>
+                 <label style="font-size: 0.8rem; text-transform: uppercase; opacity: 0.5; font-weight: 700;">Time</label>
+                 <p style="font-size: 1.3rem; font-weight: 600;" x-text="bookingTime"></p>
+               </div>
+             </div>
+             <label style="font-size: 0.8rem; text-transform: uppercase; opacity: 0.5; font-weight: 700; display: block; margin-bottom: 0.5rem;">Special Notes</label>
+             <textarea x-model="notes" class="luxury-textarea" style="background: white; min-height: 120px;" placeholder="Any special requests or preferences?"></textarea>
            </div>
         </div>
-     </div>
+
+        <!-- Footer -->
+        <footer class="booking-footer" style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: auto; padding-top: 2rem;">
+          <div x-show="showError" x-transition class="error-msg" style="background: #FFF5F5; color: #E63946; padding: 1rem 1.5rem; border-radius: 12px; font-size: 0.9rem; font-weight: 600; text-align: center; border: 1px solid #FFEBEB;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display: inline; margin-right: 8px; vertical-align: middle;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            Please select both date and time to continue.
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 1rem; width: 100%;">
+            <button class="btn-cancel" @click="currentStep > 1 ? currentStep = 1 : closeModal()" style="height: 54px; min-width: 120px; border: 1.5px dashed #D0D0D0; background: none; border-radius: 100px; display: flex; align-items: center; justify-content: center; gap: 0.8rem; font-weight: 600; cursor: pointer; color: #777;">
+              <span x-text="currentStep === 1 ? 'Cancel' : 'Back'"></span>
+            </button>
+            
+            <button 
+              class="btn-continue" 
+              :class="{ 'shake-anim': showError }"
+              @click="handleContinue()" 
+              style="height: 54px; flex: 1; max-width: 240px; background: var(--ritual-charcoal); color: white; border: none; border-radius: 100px; display: flex; align-items: center; justify-content: center; gap: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;"
+            >
+              <span x-show="!loading" x-text="currentStep === 1 ? 'Continue' : 'Add to Cart'"></span>
+              <span x-show="loading">Adding...</span>
+              <svg x-show="!loading" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
+          </div>
+        </footer>
+      </main>
+    </div>
   </div>
+</div> <!-- End of tulayraa-ritual-experience -->
+
+{% else %}
+  <!-- PREMIUM STANDARD PRODUCT LAYOUT (Refined to match high-fidelity screenshot) -->
+  <div class="tulayraa-ritual-experience tulayraa-standard-pdp-v2">
+    <div class="page-width">
+      <div class="ritual-pdp-grid">
+        
+        <!-- LEFT SIDE (45%): Editorial Gallery -->
+        <div class="ritual-gallery-side">
+          <div class="editorial-gallery">
+            <div class="gallery-main-wrapper">
+               {% if product.featured_image %}
+                 <img 
+                   src="{{ product.featured_image | image_url: width: 1400 }}" 
+                   class="gallery-main-img" 
+                   alt="{{ product.title }}"
+                   loading="eager"
+                   x-ref="mainImg"
+                 >
+               {% endif %}
+            </div>
+
+            {% if product.images.size > 1 %}
+              <div class="gallery-thumbs-horizontal" style="margin-top: 2rem;">
+                {% for image in product.images %}
+                  <div class="gallery-thumb-item" onclick="document.querySelector('.gallery-main-img').src='{{ image | image_url: width: 1400 }}'">
+                    <img src="{{ image | image_url: width: 200 }}" alt="Thumbnail">
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- RIGHT SIDE: Content Area -->
+        <div class="ritual-content-side">
+          <div class="ritual-sticky-wrapper">
+            <div class="ritual-vendor-label">{{ product.vendor }}</div>
+            <h1 class="ritual-main-title-v2">{{ product.title }}</h1>
+            
+            <div class="ritual-short-desc">
+              {{ product.description }}
+            </div>
+
+            <div class="ritual-meta-grid">
+               <div class="meta-card">
+                  <div class="meta-card__icon">
+                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                  </div>
+                  <div class="meta-card__text">
+                     <span class="meta-label">Availability</span>
+                     <span class="meta-value">{% if product.available %}In Stock{% else %}Sold Out{% endif %}</span>
+                  </div>
+               </div>
+               <div class="meta-card">
+                  <div class="meta-card__icon">
+                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path></svg>
+                  </div>
+                  <div class="meta-card__text">
+                     <span class="meta-label">Price</span>
+                     <span class="meta-value">{{ product.price | money }}</span>
+                  </div>
+               </div>
+          </div>
+
+          <div class="ritual-inclusions-v2" style="margin-top: 3rem;">
+             <div class="inclusion-title">RITUAL INCLUSIONS</div>
+             <div class="inclusions-grid-2x2">
+                <div class="inclusion-item">
+                   <div class="inclusion-icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+                   <span>Professional Consultation</span>
+                </div>
+                <div class="inclusion-item">
+                   <div class="inclusion-icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3h12l1 9H5l1-9z"></path><path d="M9 12v8a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-8"></path></svg></div>
+                   <span>Signature Gel Application</span>
+                </div>
+                <div class="inclusion-item">
+                   <div class="inclusion-icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+                   <span>Premium Aftercare Oil</span>
+                </div>
+                <div class="inclusion-item">
+                   <div class="inclusion-icon-wrap"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></div>
+                   <span>Home Service Excellence</span>
+                </div>
+             </div>
+          </div>
+
+            {% form 'product', product %}
+              <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+              
+              {% if product.variants.size > 1 and product.has_only_default_variant == false %}
+                <div class="standard-variants-v2" style="margin-top: 3rem;">
+                  <label class="meta-label">Selection</label>
+                  <select name="id" class="ritual-select-custom">
+                    {% for variant in product.variants %}
+                      <option value="{{ variant.id }}" {% if variant == product.selected_or_first_available_variant %}selected{% endif %}>
+                        {{ variant.title }} - {{ variant.price | money }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                </div>
+              {% endif %}
+
+              <div class="ritual-primary-action" style="margin-top: 3.5rem;">
+                <button type="submit" class="tulayraa-ritual-btn book-now-style" {% unless product.available %}disabled{% endunless %}>
+                  {% if product.available %}Add to Bag <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>{% else %}Sold Out{% endif %}
+                </button>
+              </div>
+            {% endform %}
+
+            <!-- Bottom Perks -->
+            <div class="ritual-perks-row-v2" style="margin-top: 5rem;">
+               <div class="perk-card-v2">
+                  <div class="perk-icon-bg"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+                  <span>Premium Products</span>
+               </div>
+               <div class="perk-card-v2">
+                  <div class="perk-icon-bg"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+                  <span>Trained Experts</span>
+               </div>
+               <div class="perk-card-v2">
+                  <div class="perk-icon-bg"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4l3 3"></path></svg></div>
+                  <span>Hygienic Tools</span>
+               </div>
+               <div class="perk-card-v2">
+                  <div class="perk-icon-bg"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
+                  <span>At-Home Comfort</span>
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
 </div>
 
 <style>
+  @media screen and (max-width: 850px) {
+    .booking-modal__content {
+      flex-direction: column !important;
+      height: 90vh !important;
+      width: 95% !important;
+      margin: 20px auto;
+    }
+    .booking-sidebar {
+      width: 100% !important;
+      padding: 2rem !important;
+      height: auto !important;
+      border-right: none !important;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    .booking-main {
+      width: 100% !important;
+      padding: 2rem !important;
+    }
+    .booking-brand__name { font-size: 2rem !important; }
+    .booking-steps { display: none !important; } /* Hide steps on mobile for space */
+    .booking-main__title { font-size: 1.8rem !important; }
+    .calendar-grid { gap: 4px !important; }
+    .time-slot { padding: 0.7rem 1.2rem !important; font-size: 0.85rem !important; }
+  }
+
+  .shake-anim { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+  @keyframes shake {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+    40%, 60% { transform: translate3d(4px, 0, 0); }
+  }
+
+  .luxury-textarea {
+    width: 100%;
+    padding: 1.5rem;
+    border: 1px solid #EAEAEA;
+    border-radius: 20px;
+    background: white;
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.5;
+    resize: none;
+    min-height: 150px;
+    margin-top: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  .luxury-textarea:focus { border-color: var(--ritual-charcoal); }
+
   :root {
     --ritual-cream: #FAF9F6;
     --ritual-charcoal: #0F172A;
     --ritual-navy: #1E293B;
-    --ritual-beige: #F5F1E9;
+    --ritual-sage: #7C8C6E;
+    --ritual-moss: #AFB784;
     --ritual-taupe: #94A3B8;
-    --ritual-gold: #C5A059;
   }
 
-  .tulayraa-ritual-experience { background: white; min-height: 100vh; padding-bottom: 150px; font-family: 'Inter', sans-serif; color: var(--ritual-charcoal); }
+  .tulayraa-ritual-experience { background: white; min-height: 100vh; padding-bottom: 150px; color: var(--ritual-charcoal); }
 
   /* PDP Grid */
   .ritual-pdp-grid { display: grid; grid-template-columns: 45% 55%; gap: 0; min-height: 100vh; }
 
   /* Gallery Side */
-  .ritual-gallery-side { position: sticky; top: 0; height: 100vh; background: var(--ritual-cream); border-right: 1px solid rgba(0,0,0,0.05); }
-  .editorial-gallery { height: 100%; display: flex; flex-direction: column; }
-  .gallery-main-wrapper { flex: 1; position: relative; overflow: hidden; }
-  .gallery-main-img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.5s cubic-bezier(0.2, 0, 0, 1); }
-  .gallery-main-wrapper:hover .gallery-main-img { transform: scale(1.05); }
-  .gallery-badge { position: absolute; top: 2rem; left: 2rem; background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); padding: 0.5rem 1rem; border-radius: 100px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; }
+  .ritual-gallery-side { position: sticky; top: 0; height: auto; background: white; }
+  .editorial-gallery { height: auto; display: flex; flex-direction: column; padding: 2rem 0; }
+  .gallery-main-wrapper { position: relative; overflow: hidden; border-radius: 8px; }
+  .gallery-main-img { width: 100%; height: auto; object-fit: cover; aspect-ratio: 4/5; }
 
   .gallery-thumbs { position: absolute; right: 2rem; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 1rem; z-index: 10; }
   .gallery-thumb-item { width: 60px; height: 80px; border-radius: 12px; overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
@@ -319,7 +640,7 @@
   .gallery-thumb-item:hover { transform: translateX(-5px); border-color: var(--ritual-charcoal); }
 
   /* Content Side */
-  .ritual-content-side { padding: 6rem 8rem; }
+  .ritual-content-side { padding: 2rem 8rem; }
   .ritual-sticky-wrapper { max-width: 600px; }
   
   .ritual-vendor-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.3em; color: var(--ritual-taupe); font-weight: 700; margin-bottom: 1.5rem; }
@@ -339,17 +660,22 @@
   /* Buttons */
   .tulayraa-ritual-btn {
     padding: 1.5rem 3.5rem;
-    background: var(--ritual-charcoal);
-    color: var(--ritual-cream);
+    background: var(--ritual-sage);
+    color: white;
     border: none;
     border-radius: 100px;
     font-size: 1.1rem;
     font-weight: 800;
     cursor: pointer;
-    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+    box-shadow: 0 20px 40px rgba(124, 140, 110, 0.15);
     transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
   }
-  .tulayraa-ritual-btn:hover { transform: translateY(-4px); box-shadow: 0 30px 60px rgba(15, 23, 42, 0.25); background: var(--ritual-navy); }
+  .tulayraa-ritual-btn:hover { 
+    transform: translateY(-4px); 
+    box-shadow: 0 30px 60px rgba(124, 140, 110, 0.25); 
+    background: var(--ritual-moss);
+    color: var(--ritual-navy);
+  }
 
   /* Addon Section */
   .ritual-addon-reveal { margin-top: 5rem; padding-top: 5rem; border-top: 1px solid rgba(0,0,0,0.05); }
@@ -379,40 +705,42 @@
   .addon-card__desc { font-size: 0.85rem; color: var(--ritual-taupe); margin-bottom: 0.5rem; }
   .addon-price { font-weight: 700; font-size: 1rem; color: var(--ritual-charcoal); }
 
-  .addon-add-pill {
-    padding: 0.6rem 1.75rem;
-    border: none;
-    background: var(--ritual-charcoal);
-    color: white;
+  .addon-add-btn {
+    padding: 0.8rem 2.2rem;
+    background: white;
+    border: 1.5px solid var(--ritual-sage);
+    color: var(--ritual-sage);
     border-radius: 100px;
+    font-size: 0.85rem;
     font-weight: 800;
-    font-size: 0.8rem;
     cursor: pointer;
+    transition: 0.3s;
   }
-  .addon-add-pill.added { background: #334155; }
+  .addon-add-btn.added { background: var(--ritual-sage); color: white; border-color: var(--ritual-sage); }
+  .addon-add-btn:hover { background: var(--ritual-sage); color: white; }
 
   /* Sticky Bar */
-  .ritual-sticky-bar-wrapper { position: fixed; bottom: 2.5rem; left: 50%; transform: translateX(-50%); z-index: 1000; }
+  .ritual-sticky-bar-wrapper { position: fixed; bottom: 2.5rem; left: 50%; transform: translateX(-50%); z-index: 1000; width: auto; max-width: 90vw; }
   .ritual-pill-bar {
-    background: var(--ritual-navy);
+    background: var(--ritual-sage);
     padding: 0.75rem 0.75rem 0.75rem 2.5rem;
     border-radius: 100px;
     display: flex;
     align-items: center;
     gap: 4rem;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.2);
     border: 1px solid rgba(255,255,255,0.1);
     backdrop-filter: blur(10px);
   }
   .pill-bar__left { display: flex; align-items: center; gap: 1.5rem; color: white; }
-  .selection-count { width: 36px; height: 36px; background: white; color: var(--ritual-charcoal); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.85rem; }
+  .selection-count { width: 36px; height: 36px; background: white; color: var(--ritual-sage); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.85rem; }
   .pill-price { font-size: 1.75rem; font-weight: 800; line-height: 1; }
-  .pill-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.1em; opacity: 0.6; margin-top: 0.3rem; }
+  .pill-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.1em; opacity: 0.7; margin-top: 0.3rem; }
 
   .book-now-btn {
     padding: 1.1rem 2.5rem;
-    background: var(--ritual-cream);
-    color: var(--ritual-charcoal);
+    background: white;
+    color: var(--ritual-sage);
     border: none;
     border-radius: 100px;
     font-weight: 900;
@@ -423,7 +751,7 @@
     gap: 0.75rem;
     transition: 0.3s;
   }
-  .book-now-btn:hover { background: white; transform: scale(1.05); }
+  .book-now-btn:hover { transform: scale(1.05); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
 
   /* Modal */
   .ritual-booking-modal { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center; }
@@ -440,26 +768,115 @@
   .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
   .calendar-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: 700; cursor: pointer; transition: 0.2s; background: var(--ritual-beige); }
   .calendar-day.active { background: var(--ritual-charcoal); color: white; }
-  .calendar-day.disabled { opacity: 0.2; }
+  /* Modal Redesign */
+  .booking-modal__content {
+    position: relative;
+    width: 100%;
+    max-width: 960px;
+    background: white;
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.1);
+    display: flex;
+    height: 700px;
+    max-height: 90vh;
+    text-align: left;
+  }
 
-  .time-chips-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 2rem; }
-  .time-chip { padding: 1.25rem; text-align: center; background: var(--ritual-beige); border-radius: 16px; font-weight: 700; cursor: pointer; }
-  .time-chip.active { background: var(--ritual-charcoal); color: white; }
+  .booking-sidebar {
+    width: 35%;
+    background: #F8F8F6;
+    padding: 4rem 3.5rem;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(0,0,0,0.03);
+  }
 
-  .luxury-input, .luxury-textarea { width: 100%; padding: 1.25rem; background: var(--ritual-beige); border: none; border-radius: 18px; outline: none; margin-bottom: 1rem; font-size: 1rem; }
-  .detect-location-btn { width: 100%; padding: 1rem; background: white; border: 2px solid var(--ritual-beige); border-radius: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 0.5rem; cursor: pointer; margin-bottom: 2rem; }
+  .booking-brand__name {
+    font-family: var(--font-heading-family);
+    font-size: 2.8rem;
+    color: var(--ritual-charcoal);
+    margin: 0;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
 
-  .final-review-card { background: var(--ritual-cream); padding: 2.5rem; border-radius: 30px; }
-  .review-section { margin-bottom: 2rem; }
-  .review-section h4 { margin: 0 0 1rem; font-size: 0.9rem; text-transform: uppercase; color: var(--ritual-taupe); }
-  .review-section ul { list-style: none; padding: 0; margin: 0; }
-  .review-section li { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; }
-  .review-total { border-top: 1px solid rgba(0,0,0,0.05); padding-top: 2rem; display: flex; justify-content: space-between; align-items: baseline; }
-  .review-total .label { font-weight: 800; font-size: 1rem; }
-  .review-total .value { font-size: 2rem; font-weight: 900; }
+  .booking-brand__tagline {
+    font-size: 0.95rem;
+    opacity: 0.6;
+    margin-top: 0.8rem;
+    line-height: 1.4;
+  }
 
-  .final-reserve-btn { width: 100%; padding: 1.5rem; background: var(--ritual-charcoal); color: white; border: none; border-radius: 20px; font-weight: 800; font-size: 1.2rem; cursor: pointer; }
-  .step-back-btn { margin-top: 1.5rem; background: none; border: none; color: var(--ritual-taupe); font-weight: 700; cursor: pointer; }
+  .booking-steps {
+    margin-top: 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .booking-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    opacity: 0.25;
+    transition: all 0.4s ease;
+  }
+
+  .booking-step.active {
+    opacity: 1;
+  }
+
+  .step-number {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #EAEAEA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .active .step-number {
+    background: var(--ritual-charcoal);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .step-info { display: flex; flex-direction: column; }
+  .step-title { font-size: 1.1rem; font-weight: 600; color: var(--ritual-charcoal); }
+  .step-desc { font-size: 0.85rem; opacity: 0.7; margin-top: 0.3rem; }
+
+  .booking-sidebar__footer { margin-top: auto; }
+  .ritual-preview { border-top: 1px solid rgba(0,0,0,0.06); padding-top: 2.5rem; }
+  .ritual-preview__name { font-size: 0.9rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 0.05em; }
+  .ritual-preview__price { font-family: var(--font-heading-family); font-size: 2rem; margin-top: 0.5rem; color: var(--ritual-charcoal); }
+
+  .booking-main { width: 65%; padding: 4rem 5rem; display: flex; flex-direction: column; overflow-y: auto; background: white; }
+  .booking-main__title { font-family: var(--font-heading-family); font-size: 2.4rem; margin-bottom: 2.5rem; color: var(--ritual-charcoal); }
+
+  .calendar-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+  .calendar-month { font-size: 1.1rem; font-weight: 600; }
+  .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; text-align: center; }
+  .calendar-weekday { font-size: 0.75rem; opacity: 0.4; text-transform: uppercase; font-weight: 700; padding-bottom: 1.5rem; }
+  .calendar-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 50%; font-size: 1rem; transition: 0.3s; }
+  .calendar-day:hover:not(.disabled) { background: #F5F5F0; }
+  .calendar-day.selected { background: var(--ritual-charcoal); color: white; transform: scale(1.1); }
+  .calendar-day.disabled { opacity: 0.15; cursor: not-allowed; }
+
+  .times-section { margin-top: 3.5rem; }
+  .times-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--ritual-charcoal); }
+  .time-slots { display: flex; flex-wrap: wrap; gap: 1rem; }
+  .time-slot { padding: 0.9rem 1.8rem; background: #F0F0F0; border-radius: 100px; cursor: pointer; font-size: 0.95rem; transition: 0.3s; }
+  .time-slot.selected { background: #F7E7CE; color: var(--ritual-charcoal); }
+
+  .booking-footer { margin-top: auto; display: flex; justify-content: space-between; align-items: center; padding-top: 4rem; }
+  .btn-cancel { display: flex; align-items: center; gap: 0.8rem; background: none; border: 1.5px dashed #D0D0D0; padding: 0.9rem 2.2rem; border-radius: 100px; cursor: pointer; font-size: 0.95rem; color: #777; transition: 0.3s; }
+  .btn-continue { background: var(--ritual-charcoal); color: white; padding: 1rem 3rem; border-radius: 100px; border: none; display: flex; align-items: center; gap: 1.2rem; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.4s; }
+  .btn-continue:hover { background: #000; transform: translateX(8px); }
 
   /* Animations */
   [x-cloak] { display: none !important; }
@@ -475,9 +892,595 @@
     .ritual-gallery-side { position: relative; height: 60vh; }
     .ritual-content-side { padding: 4rem 2rem; }
     .ritual-main-title { font-size: 3rem; }
-    .ritual-pill-bar { width: calc(100% - 2rem); min-width: 0; gap: 1rem; padding: 0.75rem 1.5rem; }
-    .pill-price { font-size: 1.25rem; }
-    .book-now-btn { padding: 1rem 1.5rem; font-size: 0.8rem; }
+    .ritual-pill-bar { 
+      width: calc(100vw - 2rem); 
+      min-width: 0; 
+      gap: 1rem; 
+      padding: 0.5rem 0.5rem 0.5rem 1.5rem; 
+      bottom: 1rem;
+    }
+    .pill-bar__left { gap: 0.8rem; }
+    .selection-count { width: 28px; height: 28px; font-size: 0.7rem; }
+    .pill-price { font-size: 1.2rem; }
+    .book-now-btn { padding: 0.8rem 1.2rem; font-size: 0.75rem; }
+  }
+
+  /* HIGH FIDELITY PDP V2 REFINEMENTS */
+  .ritual-main-title-v2 {
+    font-family: var(--font-heading-family);
+    font-size: 2.5rem; /* Smaller as requested */
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.01em;
+    color: var(--ritual-charcoal);
+  }
+
+  .ritual-short-desc {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 2.5rem;
+    max-width: 90%;
+  }
+
+  /* Meta Grid (Side by Side Cards) */
+  .ritual-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .meta-card {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.25rem;
+    background: #FAFAFA;
+    border-radius: 100px; /* Pill style */
+    border: 1px solid #F0F0F0;
+  }
+
+  .meta-card__icon {
+    width: 48px;
+    height: 48px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ritual-charcoal);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+  }
+
+  .meta-card__text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .meta-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+    font-weight: 700;
+  }
+
+  .meta-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--ritual-charcoal);
+  }
+
+  /* Inclusions 2x2 Grid */
+  .ritual-inclusions-v2 {
+    margin-bottom: 3.5rem;
+  }
+
+  .inclusion-title {
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0.8;
+  }
+
+  .inclusions-grid-2x2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .inclusion-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #444;
+  }
+
+  .inclusion-icon-wrap {
+    width: 40px;
+    height: 40px;
+    background: var(--ritual-cream);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ritual-charcoal);
+  }
+
+  /* Book Now Style Button */
+  .book-now-style {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 1.5rem 3rem;
+    border-radius: 100px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .book-now-style:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+  }
+
+  /* Perks Row Footer */
+  .ritual-perks-row-v2 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 4rem;
+  }
+
+  .perk-card-v2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.8rem;
+    padding: 1.25rem 0.5rem;
+    background: #F8F8F8;
+    border-radius: 16px;
+  }
+
+  .perk-card-v2 span {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #666;
+  }
+
+  .perk-icon-bg {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ritual-charcoal);
+    opacity: 0.8;
+  }
+
+  /* Gallery Navigation & UI */
+  .gallery-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    z-index: 10;
+  }
+
+  .gallery-nav:hover { background: var(--ritual-charcoal); color: white; }
+  .gallery-nav.prev { left: 1rem; }
+  .gallery-nav.next { right: 1rem; }
+
+  .gallery-counter {
+    position: absolute;
+    bottom: 2rem;
+    left: 2rem;
+    background: rgba(255,255,255,0.9);
+    padding: 0.5rem 1rem;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .gallery-thumbs-horizontal {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+
+  .gallery-thumbs-horizontal .gallery-thumb-item {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+  }
+
+  .gallery-thumbs-horizontal .gallery-thumb-item.active {
+    border-color: var(--ritual-charcoal);
+  }
+
+  @media screen and (max-width: 990px) {
+    .ritual-pdp-grid { grid-template-columns: 1fr; }
+    .ritual-content-side { padding: 3rem 2rem; }
+    .ritual-meta-grid { grid-template-columns: 1fr; }
+    .ritual-perks-row-v2 { grid-template-columns: 1fr 1fr; }
+    .ritual-main-title-v2 { font-size: 2.5rem; }
+  }
+
+  .ritual-select-custom {
+    width: 100%;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid #EAEAEA;
+    border-radius: 12px;
+    background: #F9F9F8;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1.5rem center;
+    background-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+  }
+
+  .ritual-select-custom:focus {
+    border-color: var(--ritual-charcoal);
+    outline: none;
+    background-color: white;
+  }
+
+  .standard-perks-v2 {
+    margin-top: 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    padding: 2.5rem;
+    background: var(--ritual-cream);
+    border-radius: 24px;
+  }
+
+  /* Inline Add-on Styles */
+  .luxury-addon-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #F0F0F0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .luxury-addon-row:hover {
+    border-color: var(--ritual-charcoal);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+  }
+
+  .luxury-addon-row.is-selected {
+    background: var(--ritual-cream);
+    border-color: var(--ritual-charcoal);
+  }
+
+  .addon-row__img {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #F9F9F8;
+    flex-shrink: 0;
+  }
+
+  .addon-row__img img { width: 100%; height: 100%; object-fit: cover; }
+
+  .addon-row__info { flex: 1; }
+  .addon-name { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.2rem; }
+  .addon-price { font-size: 0.85rem; font-weight: 600; opacity: 0.6; }
+
+  /* Addon Button */
+  .addon-add-btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 100px;
+    border: 1.5px solid var(--ritual-sage);
+    background: var(--ritual-sage);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .addon-add-btn.added {
+    background: var(--ritual-sage);
+    color: white;
+    border-color: var(--ritual-sage);
+  }
+  
+  .addon-add-btn:hover {
+    background: var(--ritual-moss);
+    color: var(--ritual-navy);
+    border-color: var(--ritual-moss);
+  }
+
+  /* Sticky Bar */
+  .ritual-pill-bar {
+    background: var(--ritual-sage);
+    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+  }
+  
+  .book-now-btn {
+    padding: 1.1rem 2.5rem;
+    background: white;
+    color: var(--ritual-sage);
+    border: none;
+    border-radius: 100px;
+    font-weight: 900;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: 0.3s;
+  }
+  .book-now-btn:hover { 
+    background: var(--ritual-moss); 
+    color: var(--ritual-navy);
+    transform: scale(1.05); 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+  }
+
+  /* Sticky Bar Selection Summary Tray */
+  .ritual-pill-summary {
+    position: absolute;
+    bottom: calc(100% + 1rem);
+    left: 0;
+    right: 0;
+    background: var(--ritual-sage);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    z-index: -1;
+  }
+
+  .summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    color: var(--ritual-navy);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+  }
+
+  .summary-close {
+    background: rgba(0,0,0,0.05);
+    border: none;
+    color: var(--ritual-navy);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .summary-close:hover { background: rgba(0,0,0,0.1); }
+
+  .summary-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 0.75rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0,0,0,0.2) transparent;
+  }
+
+  .summary-items-list::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .summary-items-list::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .summary-items-list::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.1);
+    border-radius: 10px;
+    transition: background 0.3s;
+  }
+
+  .summary-items-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(0,0,0,0.2);
+  }
+
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--ritual-charcoal);
+    padding: 0.75rem 0;
+  }
+
+  /* Sub-Addons Level 2 */
+  .sub-addons-tray {
+    margin-left: 2rem;
+    margin-top: 1rem;
+    padding: 1.5rem;
+    background: #F9F9F8;
+    border-left: 2px solid var(--ritual-sage);
+    border-radius: 0 16px 16px 0;
+  }
+
+  .sub-addons-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    color: var(--ritual-sage);
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+  }
+
+  .sub-header-line { flex: 1; height: 1px; background: rgba(0,0,0,0.05); }
+
+  .sub-addons-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .sub-addon-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .sub-addon-row:hover { border-color: var(--ritual-sage); transform: translateX(5px); }
+  .sub-addon-visual { display: flex; align-items: center; gap: 1rem; }
+
+  .sub-addon-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #FFF;
+  }
+
+  .sub-addon-img img { width: 100%; height: 100%; object-fit: cover; }
+
+  .sub-addon-info { display: flex; flex-direction: column; }
+  .sub-addon-name { font-size: 0.85rem; font-weight: 700; }
+  .sub-addon-price { font-size: 0.75rem; opacity: 0.6; font-weight: 600; }
+  .sub-selected .sub-addon-price { opacity: 0.8; }
+
+  .sub-addon-plus {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid #EEE;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ritual-sage);
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .sub-addon-plus.added { background: white; color: var(--ritual-sage); border-color: white; }
+
+  @keyframes sub-reveal-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .item-visual-group {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  .summary-item-img {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.05);
+    flex-shrink: 0;
+  }
+
+  .summary-item-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .item-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    max-width: 180px;
+    line-height: 1.3;
+  }
+
+  .item-actions { display: flex; align-items: center; gap: 1rem; }
+
+  .remove-item-btn {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .remove-item-btn:hover { background: #ef4444; color: white; transform: scale(1.1); }
+
+  /* Summary Animations */
+  .summary-slide-up {
+    animation: summaryUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .summary-slide-down {
+    animation: summaryDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes summaryUp {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes summaryDown {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to { opacity: 0; transform: translateY(30px) scale(0.95); }
   }
 </style>
 
@@ -485,6 +1488,7 @@
   function tulayraaRitual() {
     return {
       ritualStarted: false,
+      summaryOpen: false,
       selectedAddOns: [],
       modalOpen: false,
       currentStep: 1,
@@ -493,43 +1497,153 @@
       address: { full: '', city: '', pincode: '', phone: '' },
       notes: '',
       loading: false,
+      showError: false,
+      currentMonth: new Date().getMonth(),
+      currentYear: new Date().getFullYear(),
+      monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
       days: [],
       timeSlots: ['10:00 AM', '11:30 AM', '1:00 PM', '3:30 PM', '5:00 PM', '6:30 PM'],
-      basePrice: {{ product.price }},
+      basePrice: {{ product.price | json }},
+      productTitle: {{ product.title | json }},
+      variantId: {{ product.selected_or_first_available_variant.id | json }},
 
-      mockAddOns: [
-        { id: 'mock1', title: 'Chrome Finish', price: 39900, image: 'https://images.unsplash.com/photo-1604654894610-df490c8121bc?auto=format&fit=crop&q=80&w=200' },
-        { id: 'mock2', title: 'French Tips', price: 29900, image: 'https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&q=80&w=200' },
-        { id: 'mock3', title: 'Nail Art', price: 69900, image: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&q=80&w=200' },
-        { id: 'mock4', title: 'Cuticle Spa Ritual', price: 49900, image: 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=200' }
+      currentImageIndex: 0,
+      images: [
+        {% for image in product.images %}
+          {{ image | image_url: width: 1400 | json }}{% unless forloop.last %},{% endunless %}
+        {% endfor %}
       ],
 
       init() {
         this.generateCalendar();
+        
+        {% if product.metafields.custom.add_on_services.value != blank %}
+        // Only restore ritual state for products that have add-ons
+        const savedRitual = localStorage.getItem('tulayraa_ritual_started');
+        if (savedRitual === 'true') {
+          this.ritualStarted = true;
+          const savedAddOns = localStorage.getItem('tulayraa_selected_addons');
+          if (savedAddOns) {
+            this.selectedAddOns = JSON.parse(savedAddOns);
+          }
+        }
+        {% else %}
+        // For simple products: clear any leftover state from other products
+        localStorage.removeItem('tulayraa_ritual_started');
+        localStorage.removeItem('tulayraa_selected_addons');
+        {% endif %}
+      },
+
+      updateMainImage(src, index) {
+        this.currentImageIndex = index;
+        if (this.$refs.mainImg) {
+          this.$refs.mainImg.src = src;
+        }
+      },
+
+      nextImage() {
+        this.currentImageIndex = (this.currentImageIndex + 1) % this.images.length;
+        this.updateMainImage(this.images[this.currentImageIndex], this.currentImageIndex);
+      },
+
+      prevImage() {
+        this.currentImageIndex = (this.currentImageIndex - 1 + this.images.length) % this.images.length;
+        this.updateMainImage(this.images[this.currentImageIndex], this.currentImageIndex);
       },
 
       generateCalendar() {
-        const now = new Date();
-        for (let i = 0; i < 21; i++) {
-          const d = new Date(); d.setDate(now.getDate() + i);
-          this.days.push({ num: d.getDate(), full: d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }), available: i % 7 !== 0 });
+        this.days = [];
+        const firstDay = new Date(this.currentYear, this.currentMonth, 1).getDay();
+        const daysInMonth = new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
+        
+        for (let i = 0; i < firstDay; i++) {
+          this.days.push({ num: '', full: '', available: false });
         }
+        
+        const now = new Date();
+        now.setHours(0,0,0,0);
+
+        for (let i = 1; i <= daysInMonth; i++) {
+          const d = new Date(this.currentYear, this.currentMonth, i);
+          this.days.push({
+            num: i,
+            full: d.toISOString().split('T')[0],
+            available: d >= now
+          });
+        }
+      },
+
+      nextMonth() {
+        if (this.currentMonth === 11) {
+          this.currentMonth = 0;
+          this.currentYear++;
+        } else {
+          this.currentMonth++;
+        }
+        this.generateCalendar();
+      },
+
+      prevMonth() {
+        if (this.currentMonth === 0) {
+          this.currentMonth = 11;
+          this.currentYear--;
+        } else {
+          this.currentMonth--;
+        }
+        this.generateCalendar();
+      },
+
+      handleContinue() {
+        if (this.currentStep === 1) {
+          if (!this.bookingDate || !this.bookingTime) {
+            this.showError = true;
+            setTimeout(() => { this.showError = false; }, 3000);
+            return;
+          }
+          this.currentStep = 2;
+        } else {
+          this.completeRitual();
+        }
+      },
+
+      resetRitual() {
+        this.ritualStarted = false;
+        this.summaryOpen = false;
+        this.selectedAddOns = [];
+        localStorage.removeItem('tulayraa_ritual_started');
+        localStorage.removeItem('tulayraa_selected_addons');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       },
 
       startRitual() {
         this.ritualStarted = true;
+        localStorage.setItem('tulayraa_ritual_started', 'true');
         setTimeout(() => {
-          window.scrollTo({ top: document.querySelector('.ritual-addon-reveal').offsetTop - 100, behavior: 'smooth' });
+          const revealSection = document.querySelector('.ritual-addon-reveal');
+          if (revealSection) {
+            window.scrollTo({ top: revealSection.offsetTop - 100, behavior: 'smooth' });
+          }
         }, 100);
       },
 
       toggleAddOn(addon) {
-        const index = this.selectedAddOns.findIndex(a => a.id === addon.id);
-        if (index > -1) this.selectedAddOns.splice(index, 1);
-        else this.selectedAddOns.push(addon);
+        const idStr = addon.id.toString();
+        const index = this.selectedAddOns.findIndex(a => a.id.toString() === idStr);
+        if (index > -1) {
+          this.selectedAddOns.splice(index, 1);
+        } else {
+          this.selectedAddOns.push(addon);
+        }
+        // Force reactivity for Alpine
+        this.selectedAddOns = [...this.selectedAddOns];
+        localStorage.setItem('tulayraa_selected_addons', JSON.stringify(this.selectedAddOns));
       },
 
-      isSelected(id) { return this.selectedAddOns.some(a => a.id === id); },
+      isSelected(id) { 
+        if (!id) return false;
+        const idStr = id.toString();
+        return this.selectedAddOns.some(a => a.id.toString() === idStr); 
+      },
 
       get totalPrice() { return this.basePrice + this.selectedAddOns.reduce((sum, a) => sum + a.price, 0); },
 
@@ -542,39 +1656,56 @@
 
       async completeRitual() {
         this.loading = true;
-        const items = [{
-          id: {{ product.selected_or_first_available_variant.id }},
-          quantity: 1,
-          properties: {
-            'Ritual Date': this.bookingDate,
-            'Ritual Time': this.bookingTime,
-            'Service Address': this.address.full,
-            'Guest Notes': this.notes
-          }
-        }];
+        
+        try {
+          // 1. Clear cart to prevent duplicate rituals
+          await fetch(window.Shopify.routes.root + 'cart/clear.js', { method: 'POST' });
 
-        this.selectedAddOns.forEach(addon => {
-          items.push({
-            id: addon.id,
+          const items = [{
+            id: this.variantId,
             quantity: 1,
             properties: {
-               'Main Ritual': '{{ product.title }}',
-               'Ritual Date': this.bookingDate
+              'Ritual Date': this.bookingDate,
+              'Ritual Time': this.bookingTime,
+              'Guest Notes': this.notes
+            }
+          }];
+
+          this.selectedAddOns.forEach(addon => {
+            if (addon.id && !addon.id.toString().includes('mock')) {
+              items.push({
+                id: addon.id,
+                quantity: 1,
+                properties: {
+                   'Main Ritual': this.productTitle,
+                   'Ritual Date': this.bookingDate
+                }
+              });
             }
           });
-        });
 
-        await fetch(window.Shopify.routes.root + 'cart/add.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ items })
-        });
-        
-        window.location.href = '/checkout';
-      },
+          // 2. Add new ritual items
+          const response = await fetch(window.Shopify.routes.root + 'cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items })
+          });
 
-      updateMainImage(src) {
-        document.querySelector('.gallery-main-img').src = src;
+          if (response.ok) {
+            // Success: Clear local storage and redirect
+            localStorage.removeItem('tulayraa_ritual_started');
+            localStorage.removeItem('tulayraa_selected_addons');
+            window.location.href = '/cart';
+          } else {
+            const err = await response.json();
+            alert('Booking Error: ' + (err.description || err.message));
+            this.loading = false;
+          }
+        } catch (e) {
+          console.error('Ritual addition failed:', e);
+          alert('Something went wrong. Please try again.');
+          this.loading = false;
+        }
       }
     }
   }

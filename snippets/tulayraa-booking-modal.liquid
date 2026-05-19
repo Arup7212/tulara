@@ -15,77 +15,170 @@
   .booking-modal__overlay {
     position: absolute;
     inset: 0;
-    background: rgba(54, 69, 79, 0.4);
-    backdrop-filter: blur(8px);
+    background-image: url('https://cdn.shopify.com/s/files/1/0664/0658/0287/files/ChatGPT_Image_May_13_2026_04_50_36_PM.png?v=1778671273');
+    background-size: cover;
+    background-position: center;
     pointer-events: auto;
+  }
+  
+  .booking-modal__overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
   }
 
   .booking-modal__content {
     position: relative;
     width: 100%;
-    max-width: 600px;
-    background: var(--tulayraa-ivory);
-    border-radius: 30px;
+    max-width: 960px;
+    background: white;
+    border-radius: 40px;
     overflow: hidden;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.1);
     pointer-events: auto;
     display: flex;
-    flex-direction: column;
+    height: 700px;
     max-height: 90vh;
   }
 
-  .booking-modal__header {
-    padding: 2rem 3rem;
-    background: var(--tulayraa-beige);
-    border-bottom: 1px solid var(--tulayraa-champagne);
+  /* Sidebar */
+  .booking-sidebar {
+    width: 35%;
+    background: #F8F8F6;
+    padding: 4rem 3.5rem;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(0,0,0,0.03);
+  }
+
+  .booking-brand__name {
+    font-family: var(--font-heading-family);
+    font-size: 44px;
+    color: var(--tulayraa-charcoal);
+    margin: 0;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .booking-brand__tagline {
+    font-size: 0.95rem;
+    opacity: 0.6;
+    margin-top: 0.8rem;
+    line-height: 1.4;
+  }
+
+  .booking-steps {
+    margin-top: 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .booking-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    opacity: 0.25;
+    transition: all 0.4s ease;
+  }
+
+  .booking-step.active {
+    opacity: 1;
+  }
+
+  .step-number {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #EAEAEA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: all 0.4s ease;
+  }
+
+  .active .step-number {
+    background: var(--tulayraa-charcoal);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .step-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .step-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--tulayraa-charcoal);
+  }
+
+  .step-desc {
+    font-size: 0.85rem;
+    opacity: 0.7;
+    margin-top: 0.3rem;
+  }
+
+  .booking-sidebar__footer {
+    margin-top: auto;
+  }
+
+  .ritual-preview {
+    border-top: 1px solid rgba(0,0,0,0.06);
+    padding-top: 2.5rem;
+  }
+
+  .ritual-preview__name {
+    font-size: 0.9rem;
+    opacity: 0.5;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .ritual-preview__price {
+    font-family: var(--font-heading-family);
+    font-size: 2rem;
+    margin-top: 0.5rem;
+    color: var(--tulayraa-charcoal);
+  }
+
+  /* Main Area */
+  .booking-main {
+    width: 65%;
+    padding: 4rem 5rem;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background: white;
+  }
+
+  .booking-main__title {
+    font-family: var(--font-heading-family);
+    font-size: 2.4rem;
+    margin-bottom: 2.5rem;
+    color: var(--tulayraa-charcoal);
+  }
+
+  /* Calendar */
+  .calendar-nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 2rem;
   }
 
-  .booking-modal__title {
-    font-family: var(--font-heading-family);
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--tulayraa-charcoal);
+  .calendar-month {
+    font-size: 1.1rem;
+    font-weight: 600;
   }
 
-  .booking-modal__close {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--tulayraa-charcoal);
-    padding: 0.5rem;
-    transition: transform 0.3s ease;
-  }
-
-  .booking-modal__close:hover { transform: rotate(90deg); }
-
-  .booking-modal__body {
-    padding: 3rem;
-    overflow-y: auto;
-    flex: 1;
-  }
-
-  .booking-step-indicator {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 3rem;
-  }
-
-  .step-dot {
-    height: 4px;
-    flex: 1;
-    background: var(--tulayraa-champagne);
-    border-radius: 2px;
-    transition: all 0.5s ease;
-  }
-
-  .step-dot.active {
-    background: var(--tulayraa-taupe);
-  }
-
-  /* Step 1: Calendar */
   .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -93,80 +186,163 @@
     text-align: center;
   }
 
+  .calendar-weekday {
+    font-size: 0.75rem;
+    opacity: 0.4;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding-bottom: 1.5rem;
+  }
+
   .calendar-day {
-    padding: 0.75rem;
-    border-radius: 10px;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    font-family: var(--font-body-family);
-    transition: all 0.3s ease;
+    border-radius: 50%;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .calendar-day:hover:not(.disabled) {
-    background: var(--tulayraa-nude-pink);
+    background: #F5F5F0;
   }
 
   .calendar-day.selected {
     background: var(--tulayraa-charcoal);
     color: white;
+    transform: scale(1.1);
   }
 
   .calendar-day.disabled {
-    opacity: 0.3;
+    opacity: 0.15;
     cursor: not-allowed;
   }
 
-  /* Step 2: Time Slots */
+  /* Times */
+  .times-section {
+    margin-top: 3.5rem;
+  }
+
+  .times-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--tulayraa-charcoal);
+  }
+
   .time-slots {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
   }
 
   .time-slot {
-    padding: 1rem;
-    border: 1px solid var(--tulayraa-champagne);
-    border-radius: 12px;
-    text-align: center;
+    padding: 0.9rem 1.8rem;
+    background: #F0F0F0;
+    border-radius: 100px;
     cursor: pointer;
-    font-family: var(--font-heading-family);
+    font-size: 0.95rem;
     transition: all 0.3s ease;
+    border: 1px solid transparent;
   }
 
   .time-slot.selected {
-    background: var(--tulayraa-charcoal);
-    color: white;
-    border-color: var(--tulayraa-charcoal);
+    background: #F7E7CE;
+    color: var(--tulayraa-charcoal);
+    border-color: rgba(179, 139, 109, 0.2);
   }
 
-  /* Inputs */
-  .booking-input {
+  /* Details Step */
+  .booking-textarea {
     width: 100%;
-    padding: 1rem 1.5rem;
-    background: white;
-    border: 1px solid var(--tulayraa-champagne);
-    border-radius: 12px;
-    font-family: var(--font-body-family);
-    margin-bottom: 1.5rem;
+    height: 250px;
+    padding: 2rem;
+    background: #F9F9F9;
+    border: 1px solid #EAEAEA;
+    border-radius: 24px;
+    resize: none;
+    font-family: inherit;
+    font-size: 1.1rem;
+    line-height: 1.6;
     outline: none;
     transition: border-color 0.3s ease;
   }
 
-  .booking-input:focus {
+  .booking-textarea:focus {
     border-color: var(--tulayraa-taupe);
   }
 
-  .booking-modal__footer {
-    padding: 2rem 3rem;
-    background: var(--tulayraa-beige);
+  /* Footer Buttons */
+  .booking-footer {
+    margin-top: auto;
     display: flex;
     justify-content: space-between;
-    gap: 1rem;
+    align-items: center;
+    padding-top: 4rem;
   }
 
-  @media screen and (max-width: 768px) {
+  .btn-cancel {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: none;
+    border: 1.5px dashed #D0D0D0;
+    padding: 0.9rem 2.2rem;
+    border-radius: 100px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: #777;
+    transition: all 0.3s ease;
+  }
+
+  .btn-cancel:hover {
+    border-color: #999;
+    color: #444;
+  }
+
+  .btn-continue {
+    background: var(--tulayraa-charcoal);
+    color: white;
+    padding: 1rem 3rem;
+    border-radius: 100px;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-continue:hover {
+    background: #000;
+    transform: translateX(8px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+
+  .btn-continue svg {
+    transition: transform 0.4s ease;
+  }
+
+  .btn-continue:hover svg {
+    transform: translateX(4px);
+  }
+
+  @media screen and (max-width: 1024px) {
+    .booking-modal__content { max-width: 90%; }
+  }
+
+  @media screen and (max-width: 800px) {
     .booking-modal { padding: 0; }
-    .booking-modal__content { max-width: 100%; height: 100vh; max-height: 100vh; border-radius: 0; }
-    .booking-modal__body { padding: 2rem; }
+    .booking-modal__content { flex-direction: column; max-width: 100%; height: 100vh; max-height: 100vh; border-radius: 0; }
+    .booking-sidebar { width: 100%; padding: 2.5rem; height: auto; flex-shrink: 0; }
+    .booking-main { width: 100%; padding: 2.5rem; }
+    .booking-steps { display: none; }
+    .ritual-preview { display: none; }
+    .booking-brand__name { font-size: 2rem; }
   }
 </style>
 
@@ -180,98 +356,131 @@
   <div class="booking-modal__overlay" @click="$store.booking.close()"></div>
   
   <div class="booking-modal__content" x-show="$store.booking.isOpen" x-transition:enter="animate-fade-up">
-    <div class="booking-modal__header">
-      <h2 class="booking-modal__title">Book Your Ritual</h2>
-      <button class="booking-modal__close" @click="$store.booking.close()">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
-    </div>
-
-    <div class="booking-modal__body">
-      <div class="booking-step-indicator">
-        <template x-for="i in 5">
-          <div class="step-dot" :class="{ 'active': step >= i }"></div>
-        </template>
+    <!-- Sidebar -->
+    <aside class="booking-sidebar">
+      <div class="booking-brand">
+        <h2 class="booking-brand__name">Tulayraa</h2>
+        <p class="booking-brand__tagline">The Art of Intentional Beauty</p>
       </div>
 
-      <!-- Step 1: Date -->
-      <div x-show="step === 1">
-        <h3 class="tulayraa-philosophy__tagline" style="margin-bottom: 1rem;">Step 1</h3>
-        <h4 class="service-card__title">Select a Date</h4>
+      <nav class="booking-steps">
+        <div class="booking-step" :class="{ 'active': step === 1 }">
+          <div class="step-number">1</div>
+          <div class="step-info">
+            <span class="step-title">Date & Time</span>
+            <span class="step-desc">Select your ritual moment</span>
+          </div>
+        </div>
+        <div class="booking-step" :class="{ 'active': step === 2 }">
+          <div class="step-number">2</div>
+          <div class="step-info">
+            <span class="step-title">Details</span>
+            <span class="step-desc">Personalize your experience</span>
+          </div>
+        </div>
+        <div class="booking-step" :class="{ 'active': step === 3 }">
+          <div class="step-number">3</div>
+          <div class="step-info">
+            <span class="step-title">Confirmation</span>
+            <span class="step-desc">Finalize your sanctuary</span>
+          </div>
+        </div>
+      </nav>
+
+      <div class="booking-sidebar__footer">
+        <div class="ritual-preview">
+          <span class="ritual-preview__name">Signature Awakening Ritual</span>
+          <h3 class="ritual-preview__price">$250.00</h3>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="booking-main">
+      <!-- Step 1: Date & Time -->
+      <div x-show="step === 1" x-transition>
+        <h2 class="booking-main__title">Select a Date</h2>
+        
+        <div class="calendar-nav">
+          <button @click="prevMonth()" class="calendar-arrow" style="background:none; border:none; cursor:pointer; opacity:0.5;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+          <span class="calendar-month">October 2024</span>
+          <button @click="nextMonth()" class="calendar-arrow" style="background:none; border:none; cursor:pointer; opacity:0.5;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+
         <div class="calendar-grid">
+          <div class="calendar-weekday">Su</div>
+          <div class="calendar-weekday">Mo</div>
+          <div class="calendar-weekday">Tu</div>
+          <div class="calendar-weekday">We</div>
+          <div class="calendar-weekday">Th</div>
+          <div class="calendar-weekday">Fr</div>
+          <div class="calendar-weekday">Sa</div>
+          
           <template x-for="day in days">
             <div 
               class="calendar-day" 
-              :class="{ 'selected': selectedDate === day, 'disabled': day < 15 }" 
+              :class="{ 'selected': selectedDate === day, 'disabled': day < 5 }" 
               x-text="day"
-              @click="if(day >= 15) selectedDate = day"
+              @click="if(day >= 5) selectedDate = day"
             ></div>
           </template>
         </div>
-      </div>
 
-      <!-- Step 2: Time -->
-      <div x-show="step === 2">
-        <h3 class="tulayraa-philosophy__tagline" style="margin-bottom: 1rem;">Step 2</h3>
-        <h4 class="service-card__title">Choose a Time</h4>
-        <div class="time-slots">
-          <template x-for="slot in slots">
-            <div 
-              class="time-slot" 
-              :class="{ 'selected': selectedSlot === slot }" 
-              x-text="slot"
-              @click="selectedSlot = slot"
-            ></div>
-          </template>
+        <div class="times-section">
+          <h4 class="times-title">Available Times</h4>
+          <div class="time-slots">
+            <template x-for="slot in slots">
+              <div 
+                class="time-slot" 
+                :class="{ 'selected': selectedSlot === slot }" 
+                x-text="slot"
+                @click="selectedSlot = slot"
+              ></div>
+            </template>
+          </div>
         </div>
       </div>
 
-      <!-- Step 3: Address -->
-      <div x-show="step === 3">
-        <h3 class="tulayraa-philosophy__tagline" style="margin-bottom: 1rem;">Step 3</h3>
-        <h4 class="service-card__title">Service Location</h4>
-        <input type="text" class="booking-input" placeholder="Full Address" x-model="address">
-        <input type="text" class="booking-input" placeholder="Apartment / Landmark" x-model="landmark">
-        <div style="display: flex; gap: 1rem;">
-          <input type="text" class="booking-input" placeholder="City" x-model="city">
-          <input type="text" class="booking-input" placeholder="Pincode" x-model="pincode">
+      <!-- Step 2: Details -->
+      <div x-show="step === 2" x-transition>
+        <h2 class="booking-main__title">Personalize Your Ritual</h2>
+        <p style="margin-bottom: 2rem; opacity: 0.6; font-size: 1.1rem;">Any specific focus areas or preferences for your session?</p>
+        <textarea 
+          class="booking-textarea" 
+          placeholder="e.g., Focus on hydration, bridal preparation, essential oil preferences..." 
+          x-model="notes"
+        ></textarea>
+      </div>
+
+      <!-- Step 3: Confirmation -->
+      <div x-show="step === 3" x-transition>
+        <h2 class="booking-main__title">Confirm Your Ritual</h2>
+        <div class="glass-effect" style="padding: 2.5rem; margin-top: 1rem; border-radius: 30px; background: #F8F8F6;">
+          <p style="font-size: 1.2rem; margin-bottom: 1.5rem;"><strong>Date:</strong> October <span x-text="selectedDate"></span>, 2024</p>
+          <p style="font-size: 1.2rem; margin-bottom: 1.5rem;"><strong>Time:</strong> <span x-text="selectedSlot"></span></p>
+          <p style="font-size: 1.1rem; opacity: 0.7; font-style: italic;">"Balance is the new beauty. Your sanctuary is ready."</p>
         </div>
+        <p style="margin-top: 3rem; line-height: 1.6; opacity: 0.6;">By confirming, you agree to our 24-hour cancellation policy. We look forward to welcoming you.</p>
       </div>
 
-      <!-- Step 4: Notes -->
-      <div x-show="step === 4">
-        <h3 class="tulayraa-philosophy__tagline" style="margin-bottom: 1rem;">Step 4</h3>
-        <h4 class="service-card__title">Special Requests</h4>
-        <textarea class="booking-input" style="height: 150px;" placeholder="Bridal preparation, allergies, nail preferences..." x-model="notes"></textarea>
-      </div>
-
-      <!-- Step 5: Confirmation -->
-      <div x-show="step === 5">
-        <h3 class="tulayraa-philosophy__tagline" style="margin-bottom: 1rem;">Step 5</h3>
-        <h4 class="service-card__title">Ritual Summary</h4>
-        <div class="glass-effect" style="padding: 2rem; margin-top: 1rem;">
-          <p><strong>Date:</strong> May <span x-text="selectedDate"></span>, 2026</p>
-          <p><strong>Time:</strong> <span x-text="selectedSlot"></span></p>
-          <p><strong>Location:</strong> <span x-text="address"></span>, <span x-text="city"></span></p>
-        </div>
-        <p style="margin-top: 2rem; font-style: italic; opacity: 0.7;">"Balance is the new beauty. Your sanctuary is ready."</p>
-      </div>
-    </div>
-
-    <div class="booking-modal__footer">
-      <button 
-        class="tulayraa-btn tulayraa-btn--secondary" 
-        x-show="step > 1" 
-        @click="step--"
-      >Back</button>
-      
-      <button 
-        class="tulayraa-btn tulayraa-btn--primary" 
-        style="margin-left: auto;"
-        @click="nextStep()"
-        x-text="step === 5 ? 'Confirm Ritual' : 'Next'"
-      ></button>
-    </div>
+      <!-- Footer -->
+      <footer class="booking-footer">
+        <button class="btn-cancel" @click="step > 1 ? step-- : $store.booking.close()">
+          <svg x-show="step === 1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          <svg x-show="step > 1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <span x-text="step === 1 ? 'Cancel' : 'Back'"></span>
+        </button>
+        
+        <button class="btn-continue" @click="nextStep()">
+          <span x-text="step === 3 ? 'Confirm Ritual' : 'Continue to Details'"></span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </button>
+      </footer>
+    </main>
   </div>
 </div>
 
@@ -287,18 +496,17 @@
   function bookingFlow() {
     return {
       step: 1,
-      selectedDate: null,
-      selectedSlot: null,
-      address: '',
-      landmark: '',
-      city: '',
-      pincode: '',
+      selectedDate: 9,
+      selectedSlot: '10:30 AM',
       notes: '',
-      days: Array.from({length: 31}, (_, i) => i + 1),
-      slots: ['10:00 AM', '11:30 AM', '1:00 PM', '3:30 PM', '5:00 PM', '7:00 PM'],
+      days: Array.from({length: 15}, (_, i) => i + 1),
+      slots: ['09:00 AM', '10:30 AM', '01:00 PM', '03:30 PM', '05:00 PM'],
       
+      prevMonth() {},
+      nextMonth() {},
+
       nextStep() {
-        if (this.step < 5) {
+        if (this.step < 3) {
           this.step++;
         } else {
           alert('Booking Confirmed! Welcome to Tulayraa.');
